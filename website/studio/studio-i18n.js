@@ -1,4 +1,18 @@
 (function () {
+    var TOKEN_SURFACE = "--token-9038913d-9542-4e7c-8f1d-6d793c435842";
+    var TOKEN_PAGE_BG = "--token-b6079f2c-86e5-4fdb-b1bc-5a74a51795f3";
+
+    /** Framer hydrate can reinject #fafafa tokens — lock dark with important. */
+    function applyDarkTokens() {
+        var v = "#000000";
+        try {
+            document.documentElement.style.setProperty(TOKEN_SURFACE, v, "important");
+            document.documentElement.style.setProperty(TOKEN_PAGE_BG, v, "important");
+            document.body.style.setProperty(TOKEN_SURFACE, v, "important");
+            document.body.style.setProperty(TOKEN_PAGE_BG, v, "important");
+        } catch (e) {}
+    }
+
     var META = {
         title: "Nomad Studio | Operations & Automation",
         description:
@@ -541,6 +555,8 @@
     }
 
     function init() {
+        applyDarkTokens();
+
         try {
             localStorage.removeItem("nomadStudioLang");
         } catch (e) {}
@@ -554,6 +570,7 @@
         document.addEventListener("mousedown", onPointerMaybeInMain, true);
 
         scrubDocument();
+        applyDarkTokens();
 
         var root = document.getElementById("main");
         if (root && typeof MutationObserver !== "undefined") {
@@ -561,6 +578,7 @@
             var obs = new MutationObserver(function () {
                 clearTimeout(t);
                 t = setTimeout(function () {
+                    applyDarkTokens();
                     scrubDocument();
                     onMaybeCalOverlay();
                 }, 80);
@@ -579,6 +597,7 @@
 
         [500, 1500, 3000].forEach(function (ms) {
             setTimeout(function () {
+                applyDarkTokens();
                 scrubDocument();
                 onMaybeCalOverlay();
             }, ms);

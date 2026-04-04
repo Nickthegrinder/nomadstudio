@@ -1,18 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap");
 
 /* -------------------------------------------------------------------------- */
-/* Nomad Studio — light canvas (warm off-white, Sequoia-adjacent)            */
-/* studio-i18n.css is linked last in <head> so these beat Framer tokens.    */
+/* Nomad Studio — dark canvas (matches main Nomad Capital static site)         */
+/* studio-i18n.css is linked last in <head> so these beat Framer tokens.       */
 /* -------------------------------------------------------------------------- */
 
 :root {
-    color-scheme: light;
-    --nomad-canvas: #f4f3ef;
-    --nomad-canvas-warm: #efede6;
-    --nomad-ink: #141413;
-    --nomad-ink-muted: rgba(20, 20, 19, 0.62);
-    --nomad-surface: #ffffff;
-    --nomad-border: rgba(20, 20, 19, 0.12);
+    color-scheme: dark;
+    --nomad-canvas: #000000;
+    --nomad-canvas-warm: #0a0a0a;
+    --nomad-ink: #f0f0f0;
+    --nomad-ink-muted: rgba(240, 240, 240, 0.65);
+    --nomad-surface: #1a1a1a;
+    --nomad-border: rgba(255, 255, 255, 0.1);
+    --token-9038913d-9542-4e7c-8f1d-6d793c435842: var(--nomad-canvas) !important;
+    --token-b6079f2c-86e5-4fdb-b1bc-5a74a51795f3: var(--nomad-canvas) !important;
 }
 
 html {
@@ -25,7 +27,7 @@ html body {
 
 body {
     --token-b6079f2c-86e5-4fdb-b1bc-5a74a51795f3: var(--nomad-canvas) !important;
-    --token-9038913d-9542-4e7c-8f1d-6d793c435842: #ffffff !important;
+    --token-9038913d-9542-4e7c-8f1d-6d793c435842: var(--nomad-canvas-warm) !important;
     --token-e51f1380-eb96-4a17-bf57-27d2709c2f2b: var(--nomad-canvas-warm) !important;
 }
 
@@ -34,7 +36,7 @@ body {
     color: var(--nomad-ink);
 }
 
-/* Headings & copy: Framer inlined light colors for dark UI */
+/* Headings & copy */
 [data-framer-root] p.framer-text,
 [data-framer-root] h1.framer-text,
 [data-framer-root] h2.framer-text,
@@ -46,13 +48,13 @@ body {
     color: var(--nomad-ink) !important;
 }
 
-/* Mono / small caps labels that used pale gray on black */
+/* Mono / labels: pale gray on black (Framer inlines) */
 [data-framer-root] [style*="rgba(250, 250, 250, 0.3)"] {
-    color: rgba(20, 20, 19, 0.35) !important;
+    color: rgba(255, 255, 255, 0.35) !important;
 }
 
 [data-framer-root] [style*="rgba(250, 250, 250, 0.5)"] {
-    color: rgba(20, 20, 19, 0.5) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
 }
 
 [data-framer-root] [style*="rgba(250, 250, 250, 0.7)"] {
@@ -60,37 +62,41 @@ body {
 }
 
 [data-framer-root] [style*="rgba(250, 250, 250, 0.8)"] {
-    color: rgba(20, 20, 19, 0.82) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
 }
 
-/* Hairline borders drawn as light strokes on dark */
+/* Hairline borders on dark */
 [data-framer-root] [style*="border-color:rgba(250, 250, 250, 0.3)"] {
     --border-color: var(--nomad-border) !important;
     border-color: var(--nomad-border) !important;
 }
 
-/* FAQ accordion rows: white tiles */
+/* FAQ accordion rows */
 [data-framer-root] [data-framer-name="Variant 1"] {
     background-color: var(--nomad-surface) !important;
-    box-shadow: inset 0 0 0 1px rgba(20, 20, 19, 0.06);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
-/* “White” partnership CTA on dark → solid ink on light */
+/* Primary CTA — light button on dark (Framer names vary by export) */
 [data-framer-root] a[data-framer-name="partnership white"],
-[data-framer-root] [data-framer-name="partnership white"] {
-    background-color: var(--nomad-ink) !important;
-    color: var(--nomad-surface) !important;
-    --extracted-r6o4lv: var(--nomad-surface) !important;
+[data-framer-root] [data-framer-name="partnership white"],
+[data-framer-root] a[data-framer-name="Partnership program"],
+[data-framer-root] [data-framer-name="Partnership program"] {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    --extracted-r6o4lv: #000000 !important;
 }
 
 [data-framer-root] a[data-framer-name="partnership white"] .framer-text,
-[data-framer-root] [data-framer-name="partnership white"] .framer-text {
-    color: var(--nomad-surface) !important;
+[data-framer-root] [data-framer-name="partnership white"] .framer-text,
+[data-framer-root] a[data-framer-name="Partnership program"] .framer-text,
+[data-framer-root] [data-framer-name="Partnership program"] .framer-text {
+    color: #000000 !important;
 }
 
 /* Links */
 [data-framer-root] a.framer-text[href^="mailto:"] {
-    color: rgb(0, 102, 153) !important;
+    color: rgb(125, 211, 252) !important;
 }
 
 /* Replace Framer logo bitmap with local [nomad] wordmark */
