@@ -153,12 +153,12 @@
         ["Outsiders Guess. Insiders Build.", "Off-the-shelf Software"],
         ["Not Founders. Industry Leaders.", "Established SMEs."],
         ["You know the industry. We build the product.", "if custom tech can fix your bottleneck, we build it. if a simple spreadsheet works better, we'll tell you."],
-        ["WE DON'T WRITE CHECKS. WE CO-BUILD.", "The Agency Way"],
+        ["WE DON'T WRITE CHECKS. WE CO-BUILD.", "WE DON'T SELL SUBSCRIPTIONS. WE SHIP SYSTEMS."],
         ["03 / WHO WE PARTNER WITH", "03 / WHO WE HELP"],
         ["CO-BUILD A VENTURE", "LET'S TALK"],
         ["AI VENTURE STUDIO", "OPERATIONS & AUTOMATION"],
-        ["Build to spec and leave", "Pay once. Own the result."],
-        ["Write checks and wait", "Adapts to your exact business."],
+        ["Build to spec and leave", "Adapts you to it. Fees forever."],
+        ["Write checks and wait", "Monthly retainer. You rent the work."],
         ["Co-Build a Venture.", "We start with a conversation."],
         ["what does the JV structure look like?", "how does the pricing actually work?"],
         ["what industries do you focus on?", "do you only do IT or accounting?"],
@@ -168,10 +168,16 @@
         ["02 / THE THESIS", "02 / THE PROBLEM"],
         ["how is equity split?", "what if we don't need custom tech?"],
         ["You can hire developers anywhere.", "You can hire IT consultants anywhere."],
-        ["Dev Shops", "The Nomad Way"],
-        ["Investors", "Custom Systems"],
+        ["Dev Shops", "Off-the-shelf Software"],
+        ["Investors", "The Agency Way"],
         ["One Model.", "Not Everything Needs Software."],
-        ["Skin in the game", "Flat fee. 20% upfront. 80% on delivery."],
+        ["Skin in the game", "Flat fee. You own it. Done."],
+        [
+            "Forces you to change how you work. ",
+            "Most tools force you to adapt to them. You end up paying monthly for features you don't use, workarounds your team hates, and a system that still doesn't fit how you actually operate. ",
+        ],
+        ["Half the features you don't use.", ""],
+        ["Monthly fees forever.", ""],
     ];
     FRAMER_VENTURE_SCRUB.sort(function (a, b) {
         return (b[0] || "").length - (a[0] || "").length;
@@ -182,8 +188,8 @@
         for (var i = 0; i < FRAMER_VENTURE_SCRUB.length; i++) {
             var oldS = FRAMER_VENTURE_SCRUB[i][0];
             var newS = FRAMER_VENTURE_SCRUB[i][1];
-            if (oldS && newS && out.indexOf(oldS) !== -1) {
-                out = out.split(oldS).join(newS);
+            if (oldS && out.indexOf(oldS) !== -1) {
+                out = out.split(oldS).join(newS == null ? "" : newS);
             }
         }
         return out;
@@ -204,6 +210,22 @@
         out = out.replace(/\bAnti\s*Gamble\b/gi, "Nomad Studio");
         out = out.replace(/\bAntiGamble\b/g, "Nomad Studio");
         out = out.replace(/\bANTI\s*GAMBLE\b/g, "NOMAD STUDIO");
+        out = out.replace(
+            /\u00a9\s*2026\s+Nomad\s+Studio\.\s*All rights reserved\./gi,
+            "\u00a9 2026 Nomad Holdings. All rights reserved."
+        );
+        out = out.replace(
+            /©\s*2026\s+Nomad\s+Studio\.\s*All rights reserved\./g,
+            "\u00a9 2026 Nomad Holdings. All rights reserved."
+        );
+        out = out.replace(
+            /\u00a9\s*2026\s+Venture\s+Studio\.\s*All rights reserved\./gi,
+            "\u00a9 2026 Nomad Holdings. All rights reserved."
+        );
+        out = out.replace(
+            /©\s*2026\s+Venture\s+Studio\.\s*All rights reserved\./g,
+            "\u00a9 2026 Nomad Holdings. All rights reserved."
+        );
         for (var m = 0; m < LEGACY_MONOGRAM.length; m++) {
             var f = LEGACY_MONOGRAM[m];
             if (f && out.indexOf(f) !== -1) out = out.split(f).join(BRAND_TO);
@@ -304,6 +326,39 @@
         return false;
     }
 
+    function removeDuplicateHowWeWorkLine() {
+        var main = document.getElementById("main");
+        if (!main) return;
+        var needle =
+            "we figure out why your team is stuck doing manual work, and we build the exact tools to fix it.";
+        var cards = main.querySelectorAll("[data-framer-name], .framer-chtksx");
+        var c;
+        var card;
+        var tw;
+        var n;
+        var v;
+        var nv;
+        for (c = 0; c < cards.length; c++) {
+            card = cards[c];
+            if (!card.textContent || card.textContent.indexOf("01 / HOW WE WORK") === -1) continue;
+            tw = document.createTreeWalker(card, NodeFilter.SHOW_TEXT, null);
+            while ((n = tw.nextNode())) {
+                if (shouldSkipTextNode(n)) continue;
+                v = n.nodeValue || "";
+                if (v.indexOf(needle) === -1) continue;
+                nv = v
+                    .split(needle)
+                    .join("")
+                    .replace(/\s*,\s*$/g, "")
+                    .replace(/^\s*,\s*/g, "")
+                    .replace(/\s+/g, " ")
+                    .trim();
+                n.nodeValue = nv;
+                return;
+            }
+        }
+    }
+
     function walkTextNodes(root, fn) {
         var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
         var n;
@@ -338,6 +393,17 @@
         fixLegacyAttributes();
         fixCanonicalMeta();
         applyMeta();
+        removeDuplicateHowWeWorkLine();
+        applySection02ProblemHeadline();
+    }
+
+    function applySection02ProblemHeadline() {
+        var sec = document.getElementById("is-ts-1");
+        if (!sec) return;
+        var h2 = sec.querySelector("h2.framer-text, h2");
+        if (h2) {
+            h2.textContent = "Off-the-shelf software wasn't built for your business.";
+        }
     }
 
     function init() {
