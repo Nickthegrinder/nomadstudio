@@ -23,27 +23,78 @@
         var now = Date.now();
         if (now < mailtoNavLockUntil) return;
         mailtoNavLockUntil = now + 4000;
+        armCalWatch();
         window.location.href = MAILTO_LETS_TALK;
     }
 
+    function iframeLooksLikeCal(f) {
+        var src =
+            (f.getAttribute("src") || "") +
+            (f.getAttribute("data-src") || "") +
+            (typeof f.src === "string" ? f.src : "");
+        return isCalUrl(src);
+    }
+
     function tearDownCalOverlays() {
-        document.querySelectorAll('iframe[src*="cal.com"], iframe[src*="cal.link"]').forEach(function (f) {
+        document.querySelectorAll("iframe").forEach(function (f) {
+            if (!iframeLooksLikeCal(f)) return;
             var n = f;
-            for (var u = 0; u < 14 && n; u++) {
+            for (var u = 0; u < 18 && n; u++) {
                 var par = n.parentElement;
                 if (!par) break;
                 n = par;
                 var tag = (n.tagName || "").toLowerCase();
                 if (tag === "body" || tag === "html") break;
                 var st = window.getComputedStyle(n);
-                var z = parseInt(st.zIndex, 10) || 0;
-                if (st.position === "fixed" && z > 50) {
-                    n.remove();
-                    return;
+                var pos = st.position;
+                var zi = parseInt(st.zIndex, 10) || 0;
+                if ((pos === "fixed" || pos === "sticky" || pos === "absolute") && zi >= 1) {
+                    var r = n.getBoundingClientRect();
+                    if (r.width >= window.innerWidth * 0.35 || r.height >= window.innerHeight * 0.3) {
+                        n.remove();
+                        return;
+                    }
                 }
             }
             f.remove();
         });
+    }
+
+    var calWatchInterval = null;
+
+    function armCalWatch() {
+        if (calWatchInterval) clearInterval(calWatchInterval);
+        var steps = 0;
+        calWatchInterval = setInterval(function () {
+            steps++;
+            onMaybeCalOverlay();
+            if (steps >= 35) {
+                clearInterval(calWatchInterval);
+                calWatchInterval = null;
+            }
+        }, 100);
+    }
+
+    function patchWindowOpenOnce() {
+        try {
+            var orig = window.open;
+            if (orig.__nomadStudioCalPatch) return;
+            window.open = function (url, target, features) {
+                try {
+                    if (url != null && isCalUrl(String(url))) {
+                        goMailtoLetsTalk();
+                        return null;
+                    }
+                } catch (e2) {}
+                return orig.call(window, url, target, features);
+            };
+            window.open.__nomadStudioCalPatch = true;
+        } catch (e) {}
+    }
+
+    function onPointerMaybeInMain(e) {
+        var main = document.getElementById("main");
+        if (main && e.target && main.contains(e.target)) armCalWatch();
     }
 
     /**
@@ -232,9 +283,11 @@
     }
 
     function onMaybeCalOverlay() {
-        var ifr = document.querySelector('iframe[src*="cal.com"], iframe[src*="cal.link"]');
-        if (!ifr) return;
-        if (ifr.offsetWidth < 80 && ifr.offsetHeight < 80) return;
+        var found = false;
+        document.querySelectorAll("iframe").forEach(function (f) {
+            if (iframeLooksLikeCal(f)) found = true;
+        });
+        if (!found) return;
         tearDownCalOverlays();
         goMailtoLetsTalk();
     }
@@ -292,8 +345,13 @@
             localStorage.removeItem("nomadStudioLang");
         } catch (e) {}
 
+        patchWindowOpenOnce();
+
         document.addEventListener("click", tryInterceptScheduling, true);
         document.addEventListener("pointerdown", tryInterceptScheduling, true);
+        document.addEventListener("mousedown", tryInterceptScheduling, true);
+        document.addEventListener("pointerdown", onPointerMaybeInMain, true);
+        document.addEventListener("mousedown", onPointerMaybeInMain, true);
 
         scrubDocument();
 
