@@ -404,6 +404,15 @@
      * Framer SSR omits FAQ answer bodies; they mount after hydrate. Patch by accordion row index
      * (01,02,03,04,05,07 → six question rows; we replace answers at 0,1,4,5 only).
      */
+    var FAQ_QUESTION_ROWS = [
+        "Do you work with businesses outside of Canada?",
+        "What happens if we're not happy with the result?",
+        null,
+        null,
+        "Can you work with our existing tools and software?",
+        "How do we get started?",
+    ];
+
     var FAQ_ANSWER_ROWS = [
         {
             want:
@@ -436,16 +445,33 @@
         return null;
     }
 
+    function isFaqHeaderRichText(b) {
+        return !!(b && (b.closest(".framer-tg7p11") || b.closest(".framer-74nljt")));
+    }
+
+    function patchFaqQuestionsFromStudio() {
+        var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
+        if (!faqRoot) return;
+        var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
+        if (!qh || qh.length < FAQ_QUESTION_ROWS.length) return;
+        var i;
+        var t;
+        for (i = 0; i < FAQ_QUESTION_ROWS.length; i++) {
+            t = FAQ_QUESTION_ROWS[i];
+            if (!t || !qh[i]) continue;
+            qh[i].textContent = t;
+        }
+    }
+
     function patchFaqAccordionAnswers() {
         var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
         if (!faqRoot) return;
         var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
-        if (!qh || qh.length !== FAQ_ANSWER_ROWS.length) return;
+        if (!qh || qh.length < FAQ_ANSWER_ROWS.length) return;
         var i;
         var row;
         var spec;
         var container;
-        var header;
         var rtcs;
         var x;
         var b;
@@ -460,11 +486,11 @@
             if (!row) continue;
             container = findFaqItemContainer(row);
             if (!container) continue;
-            header = container.querySelector(".framer-1xm2enl");
+            var patched = false;
             rtcs = container.querySelectorAll('[data-framer-component-type="RichTextContainer"]');
             for (x = 0; x < rtcs.length; x++) {
                 b = rtcs[x];
-                if (header && header.contains(b)) continue;
+                if (isFaqHeaderRichText(b)) continue;
                 ps = b.querySelectorAll("p, li");
                 if (ps.length === 0) {
                     b.textContent = want;
@@ -475,7 +501,17 @@
                         ul.remove();
                     });
                 }
+                patched = true;
                 break;
+            }
+            if (!patched) {
+                var paras = container.querySelectorAll("p");
+                for (x = 0; x < paras.length; x++) {
+                    b = paras[x];
+                    if (b.closest && (b.closest(".framer-tg7p11") || b.closest(".framer-74nljt"))) continue;
+                    b.textContent = want;
+                    break;
+                }
             }
         }
     }
@@ -491,6 +527,7 @@
         applyMeta();
         removeDuplicateHowWeWorkLine();
         applySection02ProblemHeadline();
+        patchFaqQuestionsFromStudio();
         patchFaqAccordionAnswers();
     }
 
