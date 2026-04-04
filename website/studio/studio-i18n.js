@@ -160,10 +160,26 @@
         ["Build to spec and leave", "Adapts you to it. Fees forever."],
         ["Write checks and wait", "Monthly retainer. You rent the work."],
         ["Co-Build a Venture.", "We start with a conversation."],
-        ["what does the JV structure look like?", "how does the pricing actually work?"],
-        ["what industries do you focus on?", "do you only do IT or accounting?"],
-        ["what makes a strong domain partner?", "how long does it take?"],
-        ["do the ventures take outside investment?", "how do we start?"],
+        [
+            "what industries do you focus on?",
+            "Do you work with businesses outside of Canada?",
+        ],
+        [
+            "what does the JV structure look like?",
+            "What happens if we're not happy with the result?",
+        ],
+        [
+            "what makes a strong domain partner?",
+            "Can you work with our existing tools and software?",
+        ],
+        [
+            "do the ventures take outside investment?",
+            "How do we get started?",
+        ],
+        ["do you only do IT or accounting?", "Do you work with businesses outside of Canada?"],
+        ["how does the pricing actually work?", "What happens if we're not happy with the result?"],
+        ["how long does it take?", "Can you work with our existing tools and software?"],
+        ["how do we start?", "How do we get started?"],
         ["01 / HOW IT WORKS", "01 / HOW WE WORK"],
         ["02 / THE THESIS", "02 / THE PROBLEM"],
         ["how is equity split?", "what if we don't need custom tech?"],
@@ -384,6 +400,86 @@
         if (twD) twD.setAttribute("content", META.description);
     }
 
+    /**
+     * Framer SSR omits FAQ answer bodies; they mount after hydrate. Patch by accordion row index
+     * (01,02,03,04,05,07 → six question rows; we replace answers at 0,1,4,5 only).
+     */
+    var FAQ_ANSWER_ROWS = [
+        {
+            want:
+                "yes. we work remotely with SMEs across north america. if your operations run on software and spreadsheets, we can help regardless of where you're based.",
+        },
+        {
+            want:
+                "we don't collect the 80% until the system works the way we agreed it would. if it's not right, we fix it. we don't move on until you're satisfied.",
+        },
+        null,
+        null,
+        {
+            want:
+                "yes — that's usually the starting point. we build around what you already use. we only recommend replacing a tool if it's genuinely the bottleneck.",
+        },
+        {
+            want:
+                "send us a message at team@nomadholdings.ca or hit the let's talk button. we'll ask a few questions about your operations and let you know within 48 hours whether we can help.",
+        },
+    ];
+
+    function findFaqItemContainer(h6) {
+        var el = h6;
+        for (var u = 0; u < 22 && el; u++) {
+            if (el.getAttribute && el.getAttribute("data-framer-name") === "FAQs") return null;
+            var cl = el.className && typeof el.className === "string" ? el.className : "";
+            if (cl.indexOf("framer-") !== -1 && /-container\b/.test(cl)) return el;
+            el = el.parentElement;
+        }
+        return null;
+    }
+
+    function patchFaqAccordionAnswers() {
+        var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
+        if (!faqRoot) return;
+        var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
+        if (!qh || qh.length !== FAQ_ANSWER_ROWS.length) return;
+        var i;
+        var row;
+        var spec;
+        var container;
+        var header;
+        var rtcs;
+        var x;
+        var b;
+        var ps;
+        var z;
+        var want;
+        for (i = 0; i < FAQ_ANSWER_ROWS.length; i++) {
+            spec = FAQ_ANSWER_ROWS[i];
+            if (!spec) continue;
+            want = spec.want;
+            row = qh[i];
+            if (!row) continue;
+            container = findFaqItemContainer(row);
+            if (!container) continue;
+            header = container.querySelector(".framer-1xm2enl");
+            rtcs = container.querySelectorAll('[data-framer-component-type="RichTextContainer"]');
+            for (x = 0; x < rtcs.length; x++) {
+                b = rtcs[x];
+                if (header && header.contains(b)) continue;
+                ps = b.querySelectorAll("p, li");
+                if (ps.length === 0) {
+                    b.textContent = want;
+                } else {
+                    ps[0].textContent = want;
+                    for (z = 1; z < ps.length; z++) ps[z].remove();
+                    b.querySelectorAll("ul").forEach(function (ul) {
+                        ul.remove();
+                    });
+                }
+                break;
+            }
+        }
+    }
+
     function scrubDocument() {
         walkTextNodes(document.body, function (node) {
             var raw = node.nodeValue;
@@ -395,6 +491,7 @@
         applyMeta();
         removeDuplicateHowWeWorkLine();
         applySection02ProblemHeadline();
+        patchFaqAccordionAnswers();
     }
 
     function applySection02ProblemHeadline() {
