@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "sync:pages-studio": "node scripts/sync-pages-studio.mjs",
     "preview": "npx --yes serve -l tcp://0.0.0.0:8080 website"
   },
   "dependencies": {
