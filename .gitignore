@@ -2,3 +2,6 @@ node_modules/
 
 # Standalone deploy repo (has its own .git)
 nomadstudio/
+
+.DS_Store
+Thumbs.db
