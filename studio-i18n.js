@@ -12,6 +12,40 @@
     var MAILTO_LETS_TALK =
         "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Let's talk — Nomad Studio");
 
+    var mailtoNavLockUntil = 0;
+
+    function isCalUrl(s) {
+        var lower = (s || "").toLowerCase();
+        return lower.indexOf("cal.com") !== -1 || lower.indexOf("cal.link") !== -1;
+    }
+
+    function goMailtoLetsTalk() {
+        var now = Date.now();
+        if (now < mailtoNavLockUntil) return;
+        mailtoNavLockUntil = now + 4000;
+        window.location.href = MAILTO_LETS_TALK;
+    }
+
+    function tearDownCalOverlays() {
+        document.querySelectorAll('iframe[src*="cal.com"], iframe[src*="cal.link"]').forEach(function (f) {
+            var n = f;
+            for (var u = 0; u < 14 && n; u++) {
+                var par = n.parentElement;
+                if (!par) break;
+                n = par;
+                var tag = (n.tagName || "").toLowerCase();
+                if (tag === "body" || tag === "html") break;
+                var st = window.getComputedStyle(n);
+                var z = parseInt(st.zIndex, 10) || 0;
+                if (st.position === "fixed" && z > 50) {
+                    n.remove();
+                    return;
+                }
+            }
+            f.remove();
+        });
+    }
+
     /**
      * Framer's client bundle may re-inject legacy copy. EN→EN patches (sorted longest-first below).
      */
@@ -130,8 +164,7 @@
         document.querySelectorAll("a[href]").forEach(function (a) {
             var h = a.getAttribute("href");
             if (!h) return;
-            var lower = h.toLowerCase();
-            if (lower.indexOf("cal.com") !== -1 || lower.indexOf("cal.link") !== -1) {
+            if (isCalUrl(h)) {
                 a.setAttribute("href", MAILTO_LETS_TALK);
                 return;
             }
@@ -154,28 +187,56 @@
         if (og) og.setAttribute("content", SITE_URL);
     }
 
-    function onContactCtaClick(e) {
+    function tryInterceptScheduling(e) {
+        if (!e || !e.target) return;
         var main = document.getElementById("main");
-        if (!main || !e.target || !e.target.closest || !main.contains(e.target)) return;
-
-        var t = e.target;
-        var a = t.closest("a[href]");
-        if (a) {
-            var h = (a.getAttribute("href") || "").toLowerCase();
-            if (h.indexOf("cal.com") !== -1 || h.indexOf("cal.link") !== -1) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                window.location.href = MAILTO_LETS_TALK;
-                return;
+        var path = typeof e.composedPath === "function" ? e.composedPath() : [e.target];
+        var i;
+        var el;
+        for (i = 0; i < path.length; i++) {
+            el = path[i];
+            if (!el || el.nodeType !== 1) continue;
+            if (el.id === "main") break;
+            if (el.tagName === "A") {
+                var href = el.getAttribute("href") || "";
+                if (isCalUrl(href)) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    goMailtoLetsTalk();
+                    return;
+                }
             }
         }
 
-        var btn = t.closest('button, a[href], [role="button"]');
-        if (btn && /let'?s talk/i.test((btn.textContent || "").replace(/\s+/g, " ").trim())) {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            window.location.href = MAILTO_LETS_TALK;
+        if (!main || !main.contains(e.target)) return;
+
+        var t = e.target;
+        var walk = t;
+        for (i = 0; i < 22 && walk; i++) {
+            if (!main.contains(walk)) break;
+            var txt = (walk.textContent || "").replace(/\s+/g, " ").trim();
+            if (/^let'?s talk\.?$/i.test(txt)) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                goMailtoLetsTalk();
+                return;
+            }
+            if (/let'?s talk/i.test(txt) && txt.length <= 48) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                goMailtoLetsTalk();
+                return;
+            }
+            walk = walk.parentElement;
         }
+    }
+
+    function onMaybeCalOverlay() {
+        var ifr = document.querySelector('iframe[src*="cal.com"], iframe[src*="cal.link"]');
+        if (!ifr) return;
+        if (ifr.offsetWidth < 80 && ifr.offsetHeight < 80) return;
+        tearDownCalOverlays();
+        goMailtoLetsTalk();
     }
 
     function applySanitizeToText(s) {
@@ -231,7 +292,8 @@
             localStorage.removeItem("nomadStudioLang");
         } catch (e) {}
 
-        document.addEventListener("click", onContactCtaClick, true);
+        document.addEventListener("click", tryInterceptScheduling, true);
+        document.addEventListener("pointerdown", tryInterceptScheduling, true);
 
         scrubDocument();
 
@@ -240,13 +302,28 @@
             var t;
             var obs = new MutationObserver(function () {
                 clearTimeout(t);
-                t = setTimeout(scrubDocument, 80);
+                t = setTimeout(function () {
+                    scrubDocument();
+                    onMaybeCalOverlay();
+                }, 80);
             });
             obs.observe(root, { childList: true, subtree: true, characterData: true });
         }
 
+        if (typeof MutationObserver !== "undefined") {
+            var t2;
+            var bodyObs = new MutationObserver(function () {
+                clearTimeout(t2);
+                t2 = setTimeout(onMaybeCalOverlay, 60);
+            });
+            bodyObs.observe(document.body, { childList: true, subtree: true });
+        }
+
         [500, 1500, 3000].forEach(function (ms) {
-            setTimeout(scrubDocument, ms);
+            setTimeout(function () {
+                scrubDocument();
+                onMaybeCalOverlay();
+            }, ms);
         });
     }
 
