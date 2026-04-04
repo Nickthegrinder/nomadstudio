@@ -7,6 +7,10 @@
 
     var LEGACY_MONOGRAM = ["\u005bAG\u005d", "\u005bag\u005d"];
     var BRAND_TO = "[nomad]";
+    var CONTACT_EMAIL = "team@nomadholdings.ca";
+    var SITE_URL = "https://nomadholdings.ca/";
+    var MAILTO_LETS_TALK =
+        "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Let's talk — Nomad Studio");
 
     /**
      * Framer's client bundle may re-inject legacy copy. EN→EN patches (sorted longest-first below).
@@ -103,11 +107,15 @@
     function scrubLegacySitesAndEmail(s) {
         var out = s;
         out = out.replace(/04 \/ FAQs{2,}/g, "04 / FAQs");
-        out = out.replace(/team@antigamble\.(co|vc)/gi, "team@nomadstudio.ca");
-        out = out.replace(/mailto:\s*team@antigamble\.(co|vc)/gi, "mailto:team@nomadstudio.ca");
-        out = out.replace(/https?:\/\/(www\.)?antigamble\.(co|vc)\/?/gi, "https://nomadstudio.ca/");
-        out = out.replace(/\bantigamble\.(co|vc)\b/gi, "nomadstudio.ca");
-        out = out.replace(/\bnomadstudio\.co\b/gi, "nomadstudio.ca");
+        out = out.replace(/team@antigamble\.(co|vc)/gi, CONTACT_EMAIL);
+        out = out.replace(/mailto:\s*team@antigamble\.(co|vc)/gi, "mailto:" + CONTACT_EMAIL);
+        out = out.replace(/https?:\/\/(www\.)?antigamble\.(co|vc)\/?/gi, SITE_URL);
+        out = out.replace(/\bantigamble\.(co|vc)\b/gi, "nomadholdings.ca");
+        out = out.replace(/\bnomadstudio\.co\b/gi, "nomadholdings.ca");
+        out = out.replace(/team@nomadstudio\.ca/gi, CONTACT_EMAIL);
+        out = out.replace(/mailto:\s*team@nomadstudio\.ca/gi, "mailto:" + CONTACT_EMAIL);
+        out = out.replace(/https?:\/\/(www\.)?nomadstudio\.ca\/?/gi, SITE_URL);
+        out = out.replace(/\bnomadstudio\.ca\b/gi, "nomadholdings.ca");
         out = out.replace(/\bAnti\s*Gamble\b/gi, "Nomad Studio");
         out = out.replace(/\bAntiGamble\b/g, "Nomad Studio");
         out = out.replace(/\bANTI\s*GAMBLE\b/g, "NOMAD STUDIO");
@@ -122,13 +130,52 @@
         document.querySelectorAll("a[href]").forEach(function (a) {
             var h = a.getAttribute("href");
             if (!h) return;
+            var lower = h.toLowerCase();
+            if (lower.indexOf("cal.com") !== -1 || lower.indexOf("cal.link") !== -1) {
+                a.setAttribute("href", MAILTO_LETS_TALK);
+                return;
+            }
             var nh = h
-                .replace(/team@antigamble\.(co|vc)/gi, "team@nomadstudio.ca")
-                .replace(/mailto:\s*team@antigamble\.(co|vc)/gi, "mailto:team@nomadstudio.ca")
-                .replace(/https?:\/\/(www\.)?antigamble\.(co|vc)\/?/gi, "https://nomadstudio.ca/")
-                .replace(/nomadstudio\.co/gi, "nomadstudio.ca");
+                .replace(/team@antigamble\.(co|vc)/gi, CONTACT_EMAIL)
+                .replace(/mailto:\s*team@antigamble\.(co|vc)/gi, "mailto:" + CONTACT_EMAIL)
+                .replace(/https?:\/\/(www\.)?antigamble\.(co|vc)\/?/gi, SITE_URL)
+                .replace(/nomadstudio\.co/gi, "nomadholdings.ca")
+                .replace(/team@nomadstudio\.ca/gi, CONTACT_EMAIL)
+                .replace(/mailto:\s*team@nomadstudio\.ca/gi, "mailto:" + CONTACT_EMAIL)
+                .replace(/https?:\/\/(www\.)?nomadstudio\.ca\/?/gi, SITE_URL);
             if (nh !== h) a.setAttribute("href", nh);
         });
+    }
+
+    function fixCanonicalMeta() {
+        var link = document.querySelector('link[rel="canonical"]');
+        if (link) link.setAttribute("href", SITE_URL);
+        var og = document.querySelector('meta[property="og:url"]');
+        if (og) og.setAttribute("content", SITE_URL);
+    }
+
+    function onContactCtaClick(e) {
+        var main = document.getElementById("main");
+        if (!main || !e.target || !e.target.closest || !main.contains(e.target)) return;
+
+        var t = e.target;
+        var a = t.closest("a[href]");
+        if (a) {
+            var h = (a.getAttribute("href") || "").toLowerCase();
+            if (h.indexOf("cal.com") !== -1 || h.indexOf("cal.link") !== -1) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                window.location.href = MAILTO_LETS_TALK;
+                return;
+            }
+        }
+
+        var btn = t.closest('button, a[href], [role="button"]');
+        if (btn && /let'?s talk/i.test((btn.textContent || "").replace(/\s+/g, " ").trim())) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            window.location.href = MAILTO_LETS_TALK;
+        }
     }
 
     function applySanitizeToText(s) {
@@ -175,6 +222,7 @@
             if (next !== raw) node.nodeValue = next;
         });
         fixLegacyAttributes();
+        fixCanonicalMeta();
         applyMeta();
     }
 
@@ -182,6 +230,8 @@
         try {
             localStorage.removeItem("nomadStudioLang");
         } catch (e) {}
+
+        document.addEventListener("click", onContactCtaClick, true);
 
         scrubDocument();
 
