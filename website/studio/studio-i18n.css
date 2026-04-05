@@ -78,8 +78,10 @@ body {
 }
 
 /*
- * FAQ list vertical rhythm: Framer often adds margin on rows or on :nth-last-child(2)
- * once a seventh item is injected — stack gap should be the only vertical spacing.
+ * FAQ list: Framer sets .ssr-variant { display: contents }, so flex items are the inner
+ * framer-*-container divs — margins on .ssr-variant do not create spacing between rows.
+ * Accordion answer slots (.framer-15ssd7a) can still occupy height when the row is not in
+ * the open variant (.framer-v-niip13), which reads as “dead space” between headers.
  */
 [data-framer-root] [data-framer-name="FAQs"] > .ssr-variant {
     margin-top: 0 !important;
@@ -99,6 +101,7 @@ body {
     margin-bottom: 0 !important;
     margin-block: 0 !important;
     min-height: 0 !important;
+    height: auto !important;
 }
 
 [data-framer-root] [data-framer-name="FAQs"] [data-framer-name="Variant 1"] {
@@ -108,6 +111,17 @@ body {
 
 [data-framer-root] [data-framer-name="FAQs"] .framer-s6yNh {
     min-height: 0 !important;
+}
+
+/* Closed accordion: hide answer shell so patched copy does not reserve vertical space */
+[data-framer-root] [data-framer-name="FAQs"] .framer-s6yNh:not(.framer-v-niip13) .framer-15ssd7a {
+    display: none !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: none !important;
 }
 
 /* Primary CTA — light button on dark (Framer names vary by export) */

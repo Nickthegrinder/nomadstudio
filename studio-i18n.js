@@ -795,6 +795,26 @@
         }
     }
 
+    /** Hide accordion answer shells when row is not in Framer’s open variant (framer-v-niip13). */
+    function normalizeFaqClosedAnswerSlots() {
+        var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
+        if (!faqRoot) return;
+        var shells = faqRoot.querySelectorAll(".framer-15ssd7a");
+        var k;
+        var sh;
+        var par;
+        for (k = 0; k < shells.length; k++) {
+            sh = shells[k];
+            par = sh.closest(".framer-s6yNh");
+            if (!par) continue;
+            if (par.classList.contains("framer-v-niip13")) {
+                sh.style.removeProperty("display");
+                continue;
+            }
+            sh.style.setProperty("display", "none", "important");
+        }
+    }
+
     function findFaqItemContainer(h6) {
         var el = h6;
         for (var u = 0; u < 22 && el; u++) {
@@ -943,6 +963,7 @@
         patchFaqAccordionAnswers();
         patchFaqIndexBadges();
         normalizeFaqListSpacing();
+        normalizeFaqClosedAnswerSlots();
     }
 
     function applySection02ProblemHeadline() {
