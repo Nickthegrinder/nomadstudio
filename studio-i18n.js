@@ -702,6 +702,38 @@
     }
 
     /**
+     * Deleted FAQ items can leave empty Framer wrappers in the export (e.g. framer-ws3309-container,
+     * framer-1790loh-container for old Q06/Q08/Q09). They still participate in the FAQ stack flex layout
+     * and read as dead space. In Framer: open the FAQ stack, select the invisible accordion shells between
+     * real items, delete them, republish. This removes any that remain at runtime.
+     */
+    function removeFaqOrphanFramerContainers() {
+        var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
+        if (!faqRoot) return;
+        var list = faqRoot.querySelectorAll(
+            ".framer-ws3309-container, .framer-1790loh-container"
+        );
+        var k;
+        var n;
+        var row;
+        for (k = list.length - 1; k >= 0; k--) {
+            n = list[k];
+            if (!n || !faqRoot.contains(n)) continue;
+            if (n.querySelector(".framer-74nljt h6")) continue;
+            row = n.closest(".ssr-variant");
+            if (row && row.parentNode === faqRoot) {
+                try {
+                    row.remove();
+                } catch (eOrphan) {}
+                continue;
+            }
+            try {
+                n.remove();
+            } catch (eOrphan2) {}
+        }
+    }
+
+    /**
      * Framer often ships six FAQ shells after venture/ghost cleanup; insert clones until seven slots.
      * Clone the *penultimate* row and insertBefore the last row so the real last item keeps Framer’s
      * bottom spacing before the CTA — appending a copy of the last row left Q6 with “last item” margin
@@ -958,6 +990,7 @@
         patchCtaSubcopy();
         removeVentureFaqRows();
         removeFaqGhostRows();
+        removeFaqOrphanFramerContainers();
         ensureFaqSevenQuestionRows();
         patchFaqQuestionsFromStudio();
         patchFaqAccordionAnswers();

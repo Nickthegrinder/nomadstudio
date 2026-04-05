@@ -124,6 +124,17 @@ body {
     border: none !important;
 }
 
+/* Orphan FAQ wrappers (deleted canvas items) — no question slot */
+[data-framer-root] [data-framer-name="FAQs"] .framer-ws3309-container:not(:has(.framer-74nljt h6)),
+[data-framer-root] [data-framer-name="FAQs"] .framer-1790loh-container:not(:has(.framer-74nljt h6)) {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
 /* Primary CTA — light button on dark (Framer names vary by export) */
 [data-framer-root] a[data-framer-name="partnership white"],
 [data-framer-root] [data-framer-name="partnership white"],
