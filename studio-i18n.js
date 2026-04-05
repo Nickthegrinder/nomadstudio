@@ -702,8 +702,10 @@
     }
 
     /**
-     * Framer often ships six FAQ shells after venture/ghost cleanup; clone the last accordion row
-     * until we have seven slots so “existing tools” stays its own row (see FAQ_QUESTION_ROWS).
+     * Framer often ships six FAQ shells after venture/ghost cleanup; insert clones until seven slots.
+     * Clone the *penultimate* row and insertBefore the last row so the real last item keeps Framer’s
+     * bottom spacing before the CTA — appending a copy of the last row left Q6 with “last item” margin
+     * and a dead gap before Q7.
      */
     function ensureFaqSevenQuestionRows() {
         var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
@@ -714,11 +716,32 @@
             var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
             if (qh.length >= FAQ_EXPECTED_QUESTION_COUNT) return;
             if (qh.length === 0) return;
-            var templateRow = null;
             var kids = faqRoot.children;
+            var lastRow = null;
+            var lastIdx = -1;
             var i;
             for (i = kids.length - 1; i >= 0; i--) {
                 var row = kids[i];
+                if (
+                    row &&
+                    row.classList &&
+                    row.classList.contains("ssr-variant") &&
+                    row.querySelector(".framer-74nljt h6")
+                ) {
+                    lastRow = row;
+                    lastIdx = i;
+                    break;
+                }
+            }
+            if (!lastRow) {
+                lastRow = faqRowRootFromQuestionH6(qh[qh.length - 1]);
+                if (!lastRow || !faqRoot.contains(lastRow)) return;
+                faqRoot.appendChild(lastRow.cloneNode(true));
+                continue;
+            }
+            var templateRow = null;
+            for (i = lastIdx - 1; i >= 0; i--) {
+                row = kids[i];
                 if (
                     row &&
                     row.classList &&
@@ -730,10 +753,29 @@
                 }
             }
             if (!templateRow) {
-                templateRow = faqRowRootFromQuestionH6(qh[qh.length - 1]);
+                templateRow = lastRow;
             }
-            if (!templateRow || !faqRoot.contains(templateRow)) return;
-            faqRoot.appendChild(templateRow.cloneNode(true));
+            faqRoot.insertBefore(templateRow.cloneNode(true), lastRow);
+        }
+    }
+
+    /**
+     * FAQs stack uses flex gap (e.g. 18px); strip per-row margins so an extra “last item” margin
+     * cannot double up between Q6 and Q7. Framer: keep stack gap uniform; avoid a huge bottom margin
+     * on the last FAQ only — or add a seventh FAQ item in the project so cloning is unnecessary.
+     */
+    function normalizeFaqListSpacing() {
+        var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
+        if (!faqRoot) return;
+        var kids = faqRoot.children;
+        var i;
+        var el;
+        for (i = 0; i < kids.length; i++) {
+            el = kids[i];
+            if (!el || !el.classList || !el.classList.contains("ssr-variant")) continue;
+            if (!el.querySelector(".framer-74nljt h6")) continue;
+            el.style.marginTop = "0";
+            el.style.marginBottom = "0";
         }
     }
 
@@ -884,6 +926,7 @@
         patchFaqQuestionsFromStudio();
         patchFaqAccordionAnswers();
         patchFaqIndexBadges();
+        normalizeFaqListSpacing();
     }
 
     function applySection02ProblemHeadline() {
