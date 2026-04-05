@@ -33,11 +33,12 @@
 
     var PROBLEM_AGENCY_SUBHEAD_HTML = "Bill by the hour.<br>Talk in circles.";
     var PROBLEM_NOMAD_SUBHEAD_HTML = "Flat fee.<br>20% upfront.<br>80% on delivery.";
+    /** Text after the ✕ span (leading space matches “✕ Scope …” in design). */
     var PROBLEM_AGENCY_BULLETS = [
-        "Scope grows. The clock keeps running.",
-        "Deliverables tied to hours, not outcomes.",
-        "You bend to their process \u2014 not the reverse.",
-        "Retainers that stretch without a finish line.",
+        " Scope grows. The clock keeps running.",
+        " Deliverables tied to hours, not outcomes.",
+        " You bend to their process \u2014 not the reverse.",
+        " Retainers that stretch without a finish line.",
     ];
     var PROBLEM_NOMAD_TILES = [
         ["Your operations", "Known", "we map real workflows"],
@@ -815,7 +816,7 @@
                 } catch (eVs3) {}
                 continue;
             }
-            if (/Survival Rate/i.test(tx) && tx.length < 220) {
+            if (/survival\s+rate/i.test(tx) && tx.length < 220) {
                 try {
                     d.remove();
                 } catch (eVs4) {}
@@ -918,6 +919,108 @@
         );
     }
 
+    function patchProblemLeftPanel(left) {
+        if (!left) return;
+        var j;
+        walkTextNodes(left, function (n) {
+            var v = n.nodeValue;
+            if (!v) return;
+            if (v.trim() === "THE OUTSIDER BET") n.nodeValue = "THE AGENCY WAY";
+        });
+        var subPatched = false;
+        var divs = left.querySelectorAll("div");
+        for (j = 0; j < divs.length; j++) {
+            var d = divs[j];
+            var sty = (d.getAttribute("style") || "").replace(/\s+/g, "");
+            var txt = (d.textContent || "").trim();
+            if (
+                !subPatched &&
+                (sty.indexOf("font-size:20px") !== -1 || sty.indexOf("line-height:1.25") !== -1) &&
+                (txt.indexOf("Built By Someone Who Guessed") !== -1 ||
+                    txt.indexOf("Bill by the hour") !== -1 ||
+                    txt.indexOf("Talk in circles") !== -1)
+            ) {
+                d.innerHTML = PROBLEM_AGENCY_SUBHEAD_HTML;
+                subPatched = true;
+                break;
+            }
+        }
+        if (!subPatched && left.children.length >= 2) {
+            left.children[1].innerHTML = PROBLEM_AGENCY_SUBHEAD_HTML;
+        }
+        var bulletRoot = null;
+        for (j = 0; j < left.children.length; j++) {
+            var txl = left.children[j].textContent || "";
+            if (
+                txl.indexOf("\u2715") !== -1 ||
+                txl.indexOf("wrong problem") !== -1 ||
+                txl.indexOf("no distribution") !== -1 ||
+                (txl.indexOf("runway") !== -1 && txl.indexOf("gone") !== -1) ||
+                (txl.indexOf("built for the industry") !== -1 && txl.indexOf("inside it") !== -1)
+            ) {
+                bulletRoot = left.children[j];
+                break;
+            }
+        }
+        if (!bulletRoot) {
+            for (j = 0; j < left.children.length; j++) {
+                var cj = left.children[j];
+                if (
+                    (cj.getAttribute("style") || "").indexOf("flex-direction:column") !== -1 &&
+                    cj.children.length >= 3
+                ) {
+                    bulletRoot = cj;
+                    break;
+                }
+            }
+        }
+        if (!bulletRoot) {
+            for (j = 0; j < divs.length; j++) {
+                var dj = divs[j];
+                var tj = dj.textContent || "";
+                if (
+                    tj.indexOf("wrong problem") !== -1 ||
+                    tj.indexOf("no distribution") !== -1 ||
+                    (tj.indexOf("runway") !== -1 && tj.indexOf("gone") !== -1) ||
+                    (tj.indexOf("built for the industry") !== -1 && tj.indexOf("inside it") !== -1)
+                ) {
+                    var par = dj.parentElement;
+                    if (par && par !== left && par.children.length >= 4) {
+                        bulletRoot = par;
+                        break;
+                    }
+                }
+            }
+        }
+        if (!bulletRoot) return;
+        var brCols = bulletRoot.children;
+        var row;
+        var sps;
+        for (j = 0; j < brCols.length && j < PROBLEM_AGENCY_BULLETS.length; j++) {
+            row = brCols[j];
+            if (!row) continue;
+            sps = row.querySelectorAll("span");
+            if (sps.length >= 2) {
+                sps[0].textContent = "\u2715";
+                sps[sps.length - 1].textContent = PROBLEM_AGENCY_BULLETS[j];
+            } else if (sps.length === 1) {
+                sps[0].textContent = "\u2715" + PROBLEM_AGENCY_BULLETS[j];
+            } else {
+                row.textContent = "\u2715" + PROBLEM_AGENCY_BULLETS[j];
+            }
+        }
+        walkTextNodes(left, function (n) {
+            var v = n.nodeValue;
+            if (!v || v.indexOf("not the reverse") === -1) return;
+            if (/their process\s*[\u2013\u2014-]\s*not the reverse/i.test(v)) {
+                n.nodeValue = v.replace(
+                    /their process\s*[\u2013\u2014-]\s*not the reverse/gi,
+                    "their process \u2014 not the reverse"
+                );
+            }
+        });
+    }
+
     function patchProblemComparisonPanels() {
         var sec = document.getElementById("is-ts-1");
         if (!sec) return;
@@ -927,37 +1030,8 @@
         var left = cols.left;
         var right = cols.right;
         var j;
-        var bulletRoot;
-        var brCols;
-        var sps;
         if (left) {
-            if (left.children.length >= 2) {
-                left.children[1].innerHTML = PROBLEM_AGENCY_SUBHEAD_HTML;
-            }
-            bulletRoot = null;
-            for (j = 0; j < left.children.length; j++) {
-                if ((left.children[j].textContent || "").indexOf("\u2715") !== -1) {
-                    bulletRoot = left.children[j];
-                    break;
-                }
-            }
-            if (bulletRoot) {
-                brCols = bulletRoot.children;
-                for (j = 0; j < brCols.length && j < PROBLEM_AGENCY_BULLETS.length; j++) {
-                    sps = brCols[j].querySelectorAll("span");
-                    if (sps.length >= 2) sps[sps.length - 1].textContent = PROBLEM_AGENCY_BULLETS[j];
-                }
-            }
-            walkTextNodes(left, function (n) {
-                var v = n.nodeValue;
-                if (!v || v.indexOf("not the reverse") === -1) return;
-                if (/their process\s*[\u2013\u2014-]\s*not the reverse/i.test(v)) {
-                    n.nodeValue = v.replace(
-                        /their process\s*[\u2013\u2014-]\s*not the reverse/gi,
-                        "their process \u2014 not the reverse"
-                    );
-                }
-            });
+            patchProblemLeftPanel(left);
         }
         if (right) {
             if (right.children.length >= 2) {
