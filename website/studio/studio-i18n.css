@@ -83,6 +83,10 @@ body {
  * Accordion answer slots (.framer-15ssd7a) can still occupy height when the row is not in
  * the open variant (.framer-v-niip13), which reads as “dead space” between headers.
  */
+[data-framer-root] [data-framer-name="FAQs"] {
+    padding-bottom: clamp(24px, 3vw, 32px) !important;
+}
+
 [data-framer-root] [data-framer-name="FAQs"] > .ssr-variant {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
