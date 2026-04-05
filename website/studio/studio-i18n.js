@@ -454,8 +454,8 @@
     }
 
     /**
-     * Framer export: six .framer-74nljt question rows. Venture-era slots 07–10 in Framer map to
-     * orgs / get-started (plus training + minimum folded per user copy when only six rows exist).
+     * Target order after Framer cleanup: six core rows + final “get started” (ex–FAQ 10).
+     * If the export still has ten rows (01–10), remove venture rows 07–09 at indices 6–8 first.
      */
     var FAQ_QUESTION_ROWS = [
         "Do you work with businesses outside of Canada?",
@@ -463,6 +463,7 @@
         "what if we don't need custom tech?",
         "what do you actually build?",
         "do you work with organizations and institutions?",
+        "Can you work with our existing tools and software?",
         "how do we get started?",
     ];
 
@@ -481,7 +482,7 @@
         },
         {
             want:
-                "automation workflows, internal tools, dashboards, integrations, and AI features your team will actually use. we scope to your operations, not a feature checklist. yes — we usually build around your existing tools; we only recommend replacing one when it's genuinely the bottleneck.",
+                "automation workflows, internal tools, dashboards, integrations, and AI features your team will actually use. we scope to your operations, not a feature checklist.",
         },
         {
             want:
@@ -489,9 +490,93 @@
         },
         {
             want:
+                "yes — that's usually the starting point. we build around what you already use. we only recommend replacing a tool if it's genuinely the bottleneck.",
+        },
+        {
+            want:
                 "no minimum. we've helped solo operators and mid-size teams. what matters is whether the problem is real and the scope is clear. if we can't make an impact, we'll tell you upfront. book a free 30-minute conversation. we'll map your biggest operational bottleneck, tell you honestly whether tech can fix it, and give you a flat-fee quote before anything moves forward. no obligation.",
         },
     ];
+
+    /** Six-row Framer exports: tools line folded into “what we build” (no separate row). */
+    var FAQ_QUESTION_ROWS_SHORT = [
+        "Do you work with businesses outside of Canada?",
+        "What happens if we're not happy with the result?",
+        "what if we don't need custom tech?",
+        "what do you actually build?",
+        "do you work with organizations and institutions?",
+        "how do we get started?",
+    ];
+
+    var FAQ_ANSWER_ROWS_SHORT = [
+        FAQ_ANSWER_ROWS[0],
+        FAQ_ANSWER_ROWS[1],
+        FAQ_ANSWER_ROWS[2],
+        {
+            want:
+                "automation workflows, internal tools, dashboards, integrations, and AI features your team will actually use. we scope to your operations, not a feature checklist. yes — we usually build around your existing tools; we only recommend replacing one when it's genuinely the bottleneck.",
+        },
+        FAQ_ANSWER_ROWS[4],
+        FAQ_ANSWER_ROWS[6],
+    ];
+
+    function removeVentureFaqRows() {
+        var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
+        if (!faqRoot) return;
+        var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
+        var removeIdx = [];
+        var j;
+        if (qh.length >= 10) {
+            removeIdx = [6, 7, 8];
+        } else {
+            for (j = 0; j < qh.length; j++) {
+                var txt = ((qh[j].textContent || "") + "").toLowerCase();
+                if (
+                    /how many ventures/.test(txt) ||
+                    /venture doesn't work/.test(txt) ||
+                    /how do i apply/.test(txt)
+                ) {
+                    removeIdx.push(j);
+                }
+            }
+            var seenStart = -1;
+            for (j = 0; j < qh.length; j++) {
+                var t2 = ((qh[j].textContent || "") + "")
+                    .toLowerCase()
+                    .replace(/\s+/g, " ")
+                    .trim();
+                if (/^how do we (get )?started\??$/.test(t2)) {
+                    if (seenStart >= 0) removeIdx.push(j);
+                    else seenStart = j;
+                }
+            }
+            removeIdx.sort(function (a, b) {
+                return b - a;
+            });
+            var uniq = [];
+            for (j = 0; j < removeIdx.length; j++) {
+                if (uniq.indexOf(removeIdx[j]) === -1) uniq.push(removeIdx[j]);
+            }
+            removeIdx = uniq.sort(function (a, b) {
+                return b - a;
+            });
+        }
+        var roots = [];
+        var k;
+        for (k = 0; k < removeIdx.length; k++) {
+            var idx = removeIdx[k];
+            if (idx < 0 || idx >= qh.length) continue;
+            var h = qh[idx];
+            var root = h.closest(".ssr-variant");
+            if (!root) root = h.closest('[data-framer-name="Variant 1"]');
+            if (root && roots.indexOf(root) === -1) roots.push(root);
+        }
+        for (k = 0; k < roots.length; k++) {
+            try {
+                roots[k].remove();
+            } catch (e2) {}
+        }
+    }
 
     function findFaqItemContainer(h6) {
         var el = h6;
@@ -513,11 +598,12 @@
         if (!faqRoot) return;
         var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
         if (!qh || qh.length === 0) return;
-        var n = Math.min(qh.length, FAQ_QUESTION_ROWS.length);
+        var qRows = qh.length >= 7 ? FAQ_QUESTION_ROWS : FAQ_QUESTION_ROWS_SHORT;
+        var n = Math.min(qh.length, qRows.length);
         var i;
         var t;
         for (i = 0; i < n; i++) {
-            t = FAQ_QUESTION_ROWS[i];
+            t = qRows[i];
             if (!t || !qh[i]) continue;
             qh[i].textContent = t;
         }
@@ -528,7 +614,8 @@
         if (!faqRoot) return;
         var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
         if (!qh || qh.length === 0) return;
-        var n = Math.min(qh.length, FAQ_ANSWER_ROWS.length);
+        var aRows = qh.length >= 7 ? FAQ_ANSWER_ROWS : FAQ_ANSWER_ROWS_SHORT;
+        var n = Math.min(qh.length, aRows.length);
         var i;
         var row;
         var spec;
@@ -540,7 +627,7 @@
         var z;
         var want;
         for (i = 0; i < n; i++) {
-            spec = FAQ_ANSWER_ROWS[i];
+            spec = aRows[i];
             if (!spec) continue;
             want = spec.want;
             row = qh[i];
@@ -595,6 +682,7 @@
         patchWhoWeHelpCaseStudy();
         patchWhoWeHelpPricingParagraph();
         patchCtaSubcopy();
+        removeVentureFaqRows();
         patchFaqQuestionsFromStudio();
         patchFaqAccordionAnswers();
     }
