@@ -240,10 +240,6 @@
             "If we can help, we charge 20% to start and 80% when it's done. Zero risk.",
             "you want to know what you're paying before we start",
         ],
-        [
-            "zero bs. flat fee. smooth operations.",
-            "zero bs. flat fee. smooth operations. private businesses and organizations welcome.",
-        ],
         ["you want to focus on your business, not your IT.", "you want to focus on your business — not your IT"],
     ];
     FRAMER_VENTURE_SCRUB.sort(function (a, b) {
@@ -258,6 +254,12 @@
             if (oldS && out.indexOf(oldS) !== -1) {
                 out = out.split(oldS).join(newS == null ? "" : newS);
             }
+        }
+        var ctaSubShort = "zero bs. flat fee. smooth operations.";
+        var ctaSubLong =
+            "zero bs. flat fee. smooth operations. private businesses and organizations welcome.";
+        if ((out || "").trim() === ctaSubShort) {
+            out = ctaSubLong;
         }
         return out;
     }
