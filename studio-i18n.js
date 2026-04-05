@@ -16,8 +16,11 @@
     var META = {
         title: "Nomad Studio | Operations & Automation",
         description:
-            "we figure out why your team is stuck doing manual work, and we build the exact tools to fix it. no subscriptions. no bloated tech. just systems that work.",
+            "we help established businesses in Canada cut manual work, build the right systems, and use AI without bloat, retainers, or guesswork. flat fee. you own it.",
     };
+
+    var HERO_LEDE =
+        "we help established businesses in Canada cut the manual work, build the right systems, and actually use AI — without the bloat, the retainers, or the guesswork.";
 
     var LEGACY_MONOGRAM = ["\u005bAG\u005d", "\u005bag\u005d"];
     var BRAND_TO = "[nomad]";
@@ -153,24 +156,27 @@
         ],
         ["The Best AI Companies Get Built From The Inside.", "Automate the mess. Scale the rest."],
         ["Less bureaucracy. More business.", "Automate the mess. Scale the rest."],
-        ["we partner with industry leaders to co-build AI-native products.", "we figure out why your team is stuck doing manual work, and we build the exact tools to fix it. "],
+        [
+            "we partner with industry leaders to co-build AI-native products.",
+            "we work with business owners and organizations who are done with manual processes and off-the-shelf tools that don't fit. we audit what's broken, map what's possible, and build what actually works whether that's an automated workflow, a custom dashboard, or an AI integration your team will actually use. ",
+        ],
         ["You Know The Industry. We Build The Product.", "You run the business. We build the systems."],
         ["Every day you wait, You get more replaceable", "Every day you wait, bad processes cost you money."],
         ["we don't take every deal. most don't make it through.", "we only take projects where we can actually make an impact."],
         ["a problem worth solving and people who'd pay for it", "you want to focus on your business, not your IT."],
         ["the domain expert knows what needs to exist.", "Forces you to change how you work."],
-        ["ready to commit as a co-builder", "If we can help, we charge 20% to start and 80% when it's done. Zero risk."],
+        ["ready to commit as a co-builder", "Book a conversation—no obligation."],
         ["we're not looking for first-time entrepreneurs.", "we aren't looking for tech startups."],
         ["real relationships others don't have", "you want tools that work for you, not against you."],
         ["10+ years inside one vertical", "you want flat-fee results, not hourly billing."],
         ["one model. one partner. built from the inside.", "zero bs. flat fee. smooth operations."],
-        ["Outsiders Guess. Insiders Build.", "Off-the-shelf Software"],
-        ["Not Founders. Industry Leaders.", "Established SMEs."],
         ["You know the industry. We build the product.", "if custom tech can fix your bottleneck, we build it. if a simple spreadsheet works better, we'll tell you."],
         ["WE DON'T WRITE CHECKS. WE CO-BUILD.", "WE DON'T SELL SUBSCRIPTIONS. WE SHIP SYSTEMS."],
         ["03 / WHO WE PARTNER WITH", "03 / WHO WE HELP"],
         ["CO-BUILD A VENTURE", "LET'S TALK"],
-        ["AI VENTURE STUDIO", "OPERATIONS & AUTOMATION"],
+        ["AI VENTURE STUDIO", "AI & Automation for Canadian SMEs"],
+        ["OPERATIONS & AUTOMATION", "AI & Automation for Canadian SMEs"],
+        ["Thesis", "The Problem"],
         ["Build to spec and leave", "Adapts you to it. Fees forever."],
         ["Write checks and wait", "Monthly retainer. You rent the work."],
         ["Co-Build a Venture.", "We start with a conversation."],
@@ -199,7 +205,6 @@
         ["how is equity split?", "what if we don't need custom tech?"],
         ["You can hire developers anywhere.", "You can hire IT consultants anywhere."],
         ["Dev Shops", "Off-the-shelf Software"],
-        ["Investors", "The Agency Way"],
         ["One Model.", "Not Everything Needs Software."],
         ["Skin in the game", "Flat fee. You own it. Done."],
         [
@@ -208,6 +213,38 @@
         ],
         ["Half the features you don't use.", ""],
         ["Monthly fees forever.", ""],
+        ["THE AGENCY WAY", "THE GENERIC APPROACH"],
+        ["THE NOMAD WAY", "THE NOMAD APPROACH"],
+        [
+            "we figure out why your team is stuck doing manual work, and we build the exact tools to fix it. ",
+            "we work with business owners and organizations who are done with manual processes and off-the-shelf tools that don't fit. we audit what's broken, map what's possible, and build what actually works whether that's an automated workflow, a custom dashboard, or an AI integration your team will actually use. ",
+        ],
+
+        ["we want your business running smoothly. we don't want to sell you tech you don't need.", ""],
+        ["no subscriptions. no bloated tech. just systems that work.", "no subscriptions. no bloated tech. flat fee. you own it."],
+        ["Scope grows. The clock keeps running.", "forces you to adapt your process to the tool"],
+        ["Deliverables tied to hours, not outcomes.", "monthly fees for features you never use"],
+        ["You bend to their process—not the reverse.", "your team works around it, not with it"],
+        ["Retainers that stretch without a finish line.", "support ticket. wait 3 days. still broken."],
+        ["we aren't looking for tech startups. ", ""],
+        [
+            "we work with business owners who are tired of administrative friction and manual data entry.",
+            "we work with business owners and organizations who are done with administrative friction, manual data entry, and tech that doesn't deliver.",
+        ],
+        ["you want flat-fee results, not hourly billing.", "you want results, not hourly billing or monthly retainers"],
+        [
+            "you want tools that work for you, not against you.",
+            "you want tools built for how you actually work, not how a software company thinks you work",
+        ],
+        [
+            "If we can help, we charge 20% to start and 80% when it's done. Zero risk.",
+            "you want to know what you're paying before we start",
+        ],
+        [
+            "zero bs. flat fee. smooth operations.",
+            "zero bs. flat fee. smooth operations. private businesses and organizations welcome.",
+        ],
+        ["you want to focus on your business, not your IT.", "you want to focus on your business — not your IT"],
     ];
     FRAMER_VENTURE_SCRUB.sort(function (a, b) {
         return (b[0] || "").length - (a[0] || "").length;
@@ -360,7 +397,7 @@
         var main = document.getElementById("main");
         if (!main) return;
         var needle =
-            "we figure out why your team is stuck doing manual work, and we build the exact tools to fix it.";
+            "we work with business owners and organizations who are done with manual processes and off-the-shelf tools that don't fit. we audit what's broken, map what's possible, and build what actually works whether that's an automated workflow, a custom dashboard, or an AI integration your team will actually use.";
         var cards = main.querySelectorAll("[data-framer-name], .framer-chtksx");
         var c;
         var card;
@@ -421,8 +458,8 @@
     var FAQ_QUESTION_ROWS = [
         "Do you work with businesses outside of Canada?",
         "What happens if we're not happy with the result?",
-        null,
-        null,
+        "what if we don't need custom tech?",
+        "what do you actually build?",
         "Can you work with our existing tools and software?",
         "How do we get started?",
     ];
@@ -430,14 +467,20 @@
     var FAQ_ANSWER_ROWS = [
         {
             want:
-                "yes. we work remotely with SMEs across north america. if your operations run on software and spreadsheets, we can help regardless of where you're based.",
+                "yes. we work remotely with businesses and organizations across north america. if your operations run on software and spreadsheets, we can help regardless of where you're based. non-profits and publicly funded organizations: we can align to fixed-scope and grant-funded delivery and provide the documentation you need — ask us about your requirements.",
         },
         {
             want:
                 "we don't collect the 80% until the system works the way we agreed it would. if it's not right, we fix it. we don't move on until you're satisfied.",
         },
-        null,
-        null,
+        {
+            want:
+                "we'll tell you. if a spreadsheet or off-the-shelf tool is the honest answer, we'll say so—and we won't charge you to build what you don't need.",
+        },
+        {
+            want:
+                "automation workflows, internal tools, dashboards, integrations, and AI features your team will actually use. we scope to your operations, not a feature checklist.",
+        },
         {
             want:
                 "yes — that's usually the starting point. we build around what you already use. we only recommend replacing a tool if it's genuinely the bottleneck.",
@@ -467,10 +510,11 @@
         var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
         if (!faqRoot) return;
         var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
-        if (!qh || qh.length < FAQ_QUESTION_ROWS.length) return;
+        if (!qh || qh.length === 0) return;
+        var n = Math.min(qh.length, FAQ_QUESTION_ROWS.length);
         var i;
         var t;
-        for (i = 0; i < FAQ_QUESTION_ROWS.length; i++) {
+        for (i = 0; i < n; i++) {
             t = FAQ_QUESTION_ROWS[i];
             if (!t || !qh[i]) continue;
             qh[i].textContent = t;
@@ -481,7 +525,8 @@
         var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
         if (!faqRoot) return;
         var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
-        if (!qh || qh.length < FAQ_ANSWER_ROWS.length) return;
+        if (!qh || qh.length === 0) return;
+        var n = Math.min(qh.length, FAQ_ANSWER_ROWS.length);
         var i;
         var row;
         var spec;
@@ -492,7 +537,7 @@
         var ps;
         var z;
         var want;
-        for (i = 0; i < FAQ_ANSWER_ROWS.length; i++) {
+        for (i = 0; i < n; i++) {
             spec = FAQ_ANSWER_ROWS[i];
             if (!spec) continue;
             want = spec.want;
@@ -540,7 +585,12 @@
         fixCanonicalMeta();
         applyMeta();
         removeDuplicateHowWeWorkLine();
+        patchNavLabels();
+        patchHeroLede();
+        patchProblemComparisonTitles();
         applySection02ProblemHeadline();
+        applyWhoWeHelpHeadline();
+        patchWhoWeHelpPricingParagraph();
         patchFaqQuestionsFromStudio();
         patchFaqAccordionAnswers();
     }
@@ -552,6 +602,90 @@
         if (h2) {
             h2.textContent = "Off-the-shelf software wasn't built for your business.";
         }
+    }
+
+    function applyWhoWeHelpHeadline() {
+        var sec = document.getElementById("is-ts-2");
+        if (!sec) return;
+        var h2 = sec.querySelector("h2.framer-text, h2");
+        if (h2) {
+            h2.textContent = "Established Businesses & Organizations.";
+        }
+    }
+
+    function patchWhoWeHelpPricingParagraph() {
+        var sec = document.getElementById("is-ts-2");
+        if (!sec || sec.querySelector("[data-nomad-pricing-p]")) return;
+        var ul = sec.querySelector("ul");
+        if (!ul || !ul.parentNode) return;
+        var want =
+            "private clients: we charge 20% upfront and 80% on delivery. zero risk. organizations & institutions: we work on fixed-scope, fixed-fee contracts. ask us about program delivery and training engagements.";
+        var next = ul.nextElementSibling;
+        if (next && (next.textContent || "").indexOf("private clients:") !== -1) return;
+        var p = document.createElement("p");
+        p.setAttribute("data-nomad-pricing-p", "1");
+        p.className = "framer-text framer-styles-preset-2jn57a";
+        p.setAttribute("data-styles-preset", "zKLVRJClg");
+        p.dir = "auto";
+        p.style.cssText = "--framer-text-color:rgba(250, 250, 250, 0.8)";
+        p.textContent = want;
+        ul.parentNode.insertBefore(p, next);
+    }
+
+    function patchNavLabels() {
+        var main = document.getElementById("main");
+        if (!main) return;
+        var map = [
+            [/^Thesis$/i, "The Problem"],
+            [/^Partners$/i, "Who We Help"],
+            [/^Apply$/i, "Let's Talk"],
+        ];
+        main.querySelectorAll('a[href*="#"]').forEach(function (a) {
+            var raw = (a.textContent || "").replace(/\s+/g, " ").trim();
+            var j;
+            for (j = 0; j < map.length; j++) {
+                if (map[j][0].test(raw)) {
+                    a.textContent = map[j][1];
+                    return;
+                }
+            }
+        });
+    }
+
+    function patchHeroLede() {
+        document.querySelectorAll("h1.framer-text").forEach(function (h1) {
+            var inner = (h1.textContent || "").toLowerCase();
+            if (inner.indexOf("automate the mess") === -1) return;
+            var rtc = h1.closest('[data-framer-component-type="RichTextContainer"]');
+            if (!rtc || rtc.querySelector("[data-nomad-hero-lede]")) return;
+            var p = document.createElement("p");
+            p.setAttribute("data-nomad-hero-lede", "1");
+            p.className = "framer-text";
+            p.dir = "auto";
+            p.style.cssText =
+                "margin-top:20px;max-width:36rem;font-size:clamp(16px,1.9vw,19px);line-height:1.45;color:rgba(250,250,250,0.78)";
+            p.textContent = HERO_LEDE;
+            rtc.appendChild(p);
+        });
+    }
+
+    function patchProblemComparisonTitles() {
+        var sec = document.getElementById("is-ts-1");
+        if (!sec) return;
+        walkTextNodes(sec, function (n) {
+            if ((n.nodeValue || "").trim() !== "Bill by the hour.") return;
+            var par = n.parentNode;
+            if (!par || (par.textContent || "").indexOf("Talk in circles") === -1) return;
+            par.textContent = "Built For Everyone. Works For No One.";
+        });
+        walkTextNodes(sec, function (n) {
+            if ((n.nodeValue || "").trim() !== "Flat fee.") return;
+            var par = n.parentNode;
+            if (!par) return;
+            var full = par.textContent || "";
+            if (full.indexOf("20%") === -1 || full.indexOf("80%") === -1) return;
+            par.textContent = "Built Around How You Actually Operate.";
+        });
     }
 
     function init() {
