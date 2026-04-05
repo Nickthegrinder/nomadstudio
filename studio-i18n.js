@@ -620,6 +620,56 @@
         }
     }
 
+    function faqRemovalDedupeRoots(nodes) {
+        var out = [];
+        var i;
+        var j;
+        var n;
+        var anc;
+        for (i = 0; i < nodes.length; i++) {
+            n = nodes[i];
+            if (!n) continue;
+            anc = false;
+            for (j = 0; j < nodes.length; j++) {
+                if (i === j || !nodes[j]) continue;
+                if (nodes[j].contains(n)) {
+                    anc = true;
+                    break;
+                }
+            }
+            if (!anc && out.indexOf(n) === -1) out.push(n);
+        }
+        return out;
+    }
+
+    /**
+     * Deletes empty FAQ accordion shells (e.g. deleted items 07–09) that still reserve height in Framer.
+     */
+    function removeFaqGhostRows() {
+        var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
+        if (!faqRoot) return;
+        var toRemove = [];
+        var qh = faqRoot.querySelectorAll("h6");
+        var k;
+        var h;
+        var label;
+        var root;
+        for (k = 0; k < qh.length; k++) {
+            h = qh[k];
+            label = (h.textContent || "").replace(/\s+/g, " ").trim();
+            if (label.length > 0 && !/^(\d{1,2})\s*\/\s*$/.test(label)) continue;
+            root = h.closest(".ssr-variant") || h.closest('[data-framer-name="Variant 1"]');
+            if (!root || !faqRoot.contains(root)) continue;
+            toRemove.push(root);
+        }
+        var deduped = faqRemovalDedupeRoots(toRemove);
+        for (k = deduped.length - 1; k >= 0; k--) {
+            try {
+                deduped[k].remove();
+            } catch (eGhost) {}
+        }
+    }
+
     function findFaqItemContainer(h6) {
         var el = h6;
         for (var u = 0; u < 22 && el; u++) {
@@ -727,6 +777,7 @@
         patchWhoWeHelpPricingParagraph();
         patchCtaSubcopy();
         removeVentureFaqRows();
+        removeFaqGhostRows();
         patchFaqQuestionsFromStudio();
         patchFaqAccordionAnswers();
     }
@@ -1039,6 +1090,16 @@
         );
     }
 
+    /** Matches Framer: ~48–64px breathing room between Section 02 headline block and the two-column card. */
+    function patchProblemComparisonWrapSpacing(sec) {
+        if (!sec) return;
+        var wrap = resolveProblemComparisonWrap(sec);
+        if (!wrap) return;
+        try {
+            wrap.setAttribute("data-nomad-s02-comparison-wrap", "1");
+        } catch (eWrap) {}
+    }
+
     function patchProblemLeftPanel(left) {
         if (!left) return;
         var j;
@@ -1224,6 +1285,7 @@
             }
             patchProblemPipelineRow(right);
         }
+        patchProblemComparisonWrapSpacing(sec);
     }
 
     function wrapHasFramerProblemComparisonTable(wrap) {

@@ -136,3 +136,8 @@ body {
 [data-framer-root] [data-nomad-problem-grid] > * {
     min-width: 0;
 }
+
+/* Section 02 — space between headline and comparison card (Framer stack gap / padding) */
+[data-framer-root] [data-nomad-s02-comparison-wrap] {
+    padding-top: clamp(48px, 4.5vw, 64px) !important;
+}
