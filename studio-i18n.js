@@ -760,22 +760,38 @@
     }
 
     /**
-     * FAQs stack uses flex gap (e.g. 18px); strip per-row margins so an extra “last item” margin
-     * cannot double up between Q6 and Q7. Framer: keep stack gap uniform; avoid a huge bottom margin
-     * on the last FAQ only — or add a seventh FAQ item in the project so cloning is unnecessary.
+     * FAQs stack uses flex gap; strip margins/min-heights on rows and inner Framer shells so
+     * :nth-last-child(2) / last-item rules cannot double space (see studio-i18n.css FAQ block).
      */
     function normalizeFaqListSpacing() {
         var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
         if (!faqRoot) return;
         var kids = faqRoot.children;
         var i;
+        var j;
         var el;
+        var c;
+        var v1;
         for (i = 0; i < kids.length; i++) {
             el = kids[i];
             if (!el || !el.classList || !el.classList.contains("ssr-variant")) continue;
             if (!el.querySelector(".framer-74nljt h6")) continue;
-            el.style.marginTop = "0";
-            el.style.marginBottom = "0";
+            el.style.setProperty("margin-top", "0", "important");
+            el.style.setProperty("margin-bottom", "0", "important");
+            el.style.setProperty("min-height", "0", "important");
+            for (j = 0; j < el.children.length; j++) {
+                c = el.children[j];
+                if (!c || !c.className || typeof c.className !== "string") continue;
+                if (c.className.indexOf("framer-") === -1) continue;
+                c.style.setProperty("margin-top", "0", "important");
+                c.style.setProperty("margin-bottom", "0", "important");
+                c.style.setProperty("min-height", "0", "important");
+            }
+            v1 = el.querySelector('[data-framer-name="Variant 1"]');
+            if (v1) {
+                v1.style.setProperty("min-height", "0", "important");
+                v1.style.setProperty("margin-block", "0", "important");
+            }
         }
     }
 

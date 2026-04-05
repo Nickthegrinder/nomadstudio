@@ -77,6 +77,39 @@ body {
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
+/*
+ * FAQ list vertical rhythm: Framer often adds margin on rows or on :nth-last-child(2)
+ * once a seventh item is injected — stack gap should be the only vertical spacing.
+ */
+[data-framer-root] [data-framer-name="FAQs"] > .ssr-variant {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    margin-block: 0 !important;
+    min-height: 0 !important;
+}
+
+[data-framer-root] [data-framer-name="FAQs"] > .ssr-variant:nth-last-child(2) {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+[data-framer-root] [data-framer-name="FAQs"] > .ssr-variant > div[class*="framer-"] {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    margin-block: 0 !important;
+    min-height: 0 !important;
+}
+
+[data-framer-root] [data-framer-name="FAQs"] [data-framer-name="Variant 1"] {
+    min-height: 0 !important;
+    margin-block: 0 !important;
+}
+
+[data-framer-root] [data-framer-name="FAQs"] .framer-s6yNh {
+    min-height: 0 !important;
+}
+
 /* Primary CTA — light button on dark (Framer names vary by export) */
 [data-framer-root] a[data-framer-name="partnership white"],
 [data-framer-root] [data-framer-name="partnership white"],
