@@ -31,6 +31,21 @@
     var PROBLEM_SECTION_BODY =
         "Most tools force you to adapt to them. You end up paying monthly for features you don't use, workarounds your team hates, and a system that still doesn't fit how you actually operate.";
 
+    var PROBLEM_AGENCY_SUBHEAD_HTML = "Bill by the hour.<br>Talk in circles.";
+    var PROBLEM_NOMAD_SUBHEAD_HTML = "Flat fee.<br>20% upfront.<br>80% on delivery.";
+    var PROBLEM_AGENCY_BULLETS = [
+        "Scope grows. The clock keeps running.",
+        "Deliverables tied to hours, not outcomes.",
+        "You bend to their process \u2014 not the reverse.",
+        "Retainers that stretch without a finish line.",
+    ];
+    var PROBLEM_NOMAD_TILES = [
+        ["Your operations", "Known", "we map real workflows"],
+        ["Scope", "Fixed", "before we build"],
+        ["Honest fit", "First", "no tech for tech's sake"],
+        ["Delivery", "Phased", "you can use it early"],
+    ];
+
     var LEGACY_MONOGRAM = ["\u005bAG\u005d", "\u005bag\u005d"];
     var BRAND_TO = "[nomad]";
     var CONTACT_EMAIL = "team@nomadholdings.ca";
@@ -681,7 +696,7 @@
         patchHeroLede();
         applySection02ProblemHeadline();
         patchSection02ProblemBody();
-        patchProblemAgencyColumnCleanup();
+        patchProblemComparisonPanels();
         patchProblemComparisonTable();
         applyWhoWeHelpHeadline();
         patchWhoWeHelpCaseStudy();
@@ -716,41 +731,197 @@
         }
     }
 
-    function patchProblemAgencyColumnCleanup() {
-        var sec = document.getElementById("is-ts-1");
+    function nukeProblemPanelDeckMetrics(sec) {
         if (!sec) return;
-        var wrap = sec.querySelector('.framer-12rkaoe-container div[style*="max-width:720px"]');
-        if (!wrap) return;
-        var grid = wrap.children[0];
-        if (!grid || (grid.getAttribute("style") || "").indexOf("grid-template-columns:1fr 1fr") === -1) return;
-        var left = grid.children[0];
-        if (!left) return;
-        var three = left.querySelector('div[style*="grid-template-columns:1fr 1fr 1fr"]');
-        if (three) three.remove();
-        var autoBlocks = left.querySelectorAll("div[style*='margin-top:auto']");
-        var k;
-        for (k = 0; k < autoBlocks.length; k++) {
-            if ((autoBlocks[k].textContent || "").indexOf("Satisfaction") !== -1) {
-                autoBlocks[k].remove();
-                break;
+        var list = sec.getElementsByTagName("div");
+        var i;
+        var snap = [];
+        for (i = 0; i < list.length; i++) snap.push(list[i]);
+        for (i = 0; i < snap.length; i++) {
+            var st = (snap[i].getAttribute("style") || "").replace(/\s+/g, "");
+            if (st.indexOf("grid-template-columns:1fr1fr1fr") !== -1) {
+                try {
+                    snap[i].remove();
+                } catch (eNuke3) {}
             }
         }
-        walkTextNodes(left, function (n) {
-            var v = n.nodeValue;
-            if (!v || v.indexOf("not the reverse") === -1) return;
-            if (/their process\s*[\u2013\u2014-]\s*not the reverse/i.test(v)) {
-                n.nodeValue = v.replace(
-                    /their process\s*[\u2013\u2014-]\s*not the reverse/gi,
-                    "their process \u2014 not the reverse"
-                );
+        snap = [];
+        list = sec.getElementsByTagName("div");
+        for (i = 0; i < list.length; i++) snap.push(list[i]);
+        var kill = [];
+        for (i = 0; i < snap.length; i++) {
+            var d = snap[i];
+            var st2 = d.getAttribute("style") || "";
+            if (st2.indexOf("margin-top:auto") === -1) continue;
+            var t = (d.textContent || "").replace(/\s+/g, " ").trim();
+            if (/Satisfaction/i.test(t) && t.length < 200) kill.push(d);
+            else if (/Reliability/i.test(t) && t.length < 200) kill.push(d);
+        }
+        for (i = 0; i < kill.length; i++) {
+            try {
+                kill[i].remove();
+            } catch (eNukeB) {}
+        }
+    }
+
+    function getProblemPanelColumns(sec) {
+        var leftCol = null;
+        var rightCol = null;
+        var cand;
+        var red = sec.querySelector('span[style*="#ff6b6b"]');
+        if (red && red.parentElement && red.parentElement.parentElement) {
+            cand = red.parentElement.parentElement;
+            if ((cand.textContent || "").indexOf("Bill by the hour") !== -1) leftCol = cand;
+        }
+        if (!leftCol) {
+            leftCol = sec.querySelector('div[style*="border-right:1px solid #2a2a2a"]');
+        }
+        if (!leftCol && red) {
+            cand = red;
+            var u;
+            for (u = 0; u < 14 && cand; u++) {
+                cand = cand.parentElement;
+                if (!cand || cand === sec) break;
+                var tx = cand.textContent || "";
+                if (tx.indexOf("THE AGENCY WAY") !== -1 && tx.indexOf("Bill by the hour") !== -1) {
+                    leftCol = cand;
+                    break;
+                }
             }
-        });
+        }
+        var grn =
+            sec.querySelector('span[style*="#c8ff00"]') ||
+            sec.querySelector('span[style*="rgb(200, 255, 0)"]');
+        if (grn && grn.parentElement && grn.parentElement.parentElement) {
+            cand = grn.parentElement.parentElement;
+            if ((cand.textContent || "").indexOf("Flat fee") !== -1) rightCol = cand;
+        }
+        if (!rightCol && leftCol && leftCol.nextElementSibling) {
+            cand = leftCol.nextElementSibling;
+            if ((cand.textContent || "").indexOf("THE NOMAD WAY") !== -1) rightCol = cand;
+        }
+        if (!rightCol && grn) {
+            cand = grn;
+            for (var v = 0; v < 14 && cand; v++) {
+                cand = cand.parentElement;
+                if (!cand || cand === sec) break;
+                var ty = cand.textContent || "";
+                if (ty.indexOf("THE NOMAD WAY") !== -1 && ty.indexOf("Flat fee") !== -1) {
+                    rightCol = cand;
+                    break;
+                }
+            }
+        }
+        return { left: leftCol, right: rightCol };
+    }
+
+    function resolveProblemComparisonWrap(sec) {
+        var cols = getProblemPanelColumns(sec);
+        if (cols.left && cols.left.parentElement && cols.left.parentElement.parentElement) {
+            return cols.left.parentElement.parentElement;
+        }
+        return (
+            sec.querySelector('.framer-12rkaoe-container div[style*="max-width:720px"]') ||
+            sec.querySelector('div[style*="max-width:720px"]')
+        );
+    }
+
+    function patchProblemComparisonPanels() {
+        var sec = document.getElementById("is-ts-1");
+        if (!sec) return;
+        nukeProblemPanelDeckMetrics(sec);
+        var cols = getProblemPanelColumns(sec);
+        var left = cols.left;
+        var right = cols.right;
+        var j;
+        var bulletRoot;
+        var brCols;
+        var sps;
+        if (left) {
+            if (left.children.length >= 2) {
+                left.children[1].innerHTML = PROBLEM_AGENCY_SUBHEAD_HTML;
+            }
+            bulletRoot = null;
+            for (j = 0; j < left.children.length; j++) {
+                if ((left.children[j].textContent || "").indexOf("\u2715") !== -1) {
+                    bulletRoot = left.children[j];
+                    break;
+                }
+            }
+            if (bulletRoot) {
+                brCols = bulletRoot.children;
+                for (j = 0; j < brCols.length && j < PROBLEM_AGENCY_BULLETS.length; j++) {
+                    sps = brCols[j].querySelectorAll("span");
+                    if (sps.length >= 2) sps[sps.length - 1].textContent = PROBLEM_AGENCY_BULLETS[j];
+                }
+            }
+            walkTextNodes(left, function (n) {
+                var v = n.nodeValue;
+                if (!v || v.indexOf("not the reverse") === -1) return;
+                if (/their process\s*[\u2013\u2014-]\s*not the reverse/i.test(v)) {
+                    n.nodeValue = v.replace(
+                        /their process\s*[\u2013\u2014-]\s*not the reverse/gi,
+                        "their process \u2014 not the reverse"
+                    );
+                }
+            });
+        }
+        if (right) {
+            if (right.children.length >= 2) {
+                right.children[1].innerHTML = PROBLEM_NOMAD_SUBHEAD_HTML;
+            }
+            var grids = right.querySelectorAll("div");
+            var tileGrid = null;
+            for (j = 0; j < grids.length; j++) {
+                var gst = (grids[j].getAttribute("style") || "").replace(/\s+/g, "");
+                if (gst.indexOf("grid-template-columns:1fr1fr") !== -1 && gst.indexOf("flex:1") !== -1) {
+                    tileGrid = grids[j];
+                    break;
+                }
+            }
+            if (!tileGrid) {
+                for (j = 0; j < grids.length; j++) {
+                    if (grids[j].children.length === 4) {
+                        var z = grids[j].children[0];
+                        var zt = (z.textContent || "").trim();
+                        if (zt === "Your operations" || zt.indexOf("operations") !== -1) {
+                            tileGrid = grids[j];
+                            break;
+                        }
+                    }
+                }
+            }
+            if (tileGrid && tileGrid.children.length >= 4) {
+                for (j = 0; j < 4; j++) {
+                    var card = tileGrid.children[j];
+                    var ch = card.children;
+                    if (ch.length >= 3) {
+                        ch[0].textContent = PROBLEM_NOMAD_TILES[j][0];
+                        ch[1].textContent = PROBLEM_NOMAD_TILES[j][1];
+                        ch[2].textContent = PROBLEM_NOMAD_TILES[j][2];
+                    }
+                }
+            }
+            var pipeRows = right.querySelectorAll("div[style*='justify-content:space-between']");
+            var pr;
+            var chips;
+            for (j = 0; j < pipeRows.length; j++) {
+                pr = pipeRows[j];
+                chips = pr.querySelectorAll("div[style*='white-space:nowrap']");
+                if (chips.length === 3) {
+                    chips[0].textContent = "your process";
+                    chips[1].textContent = "we build";
+                    chips[2].textContent = "you own it";
+                    break;
+                }
+            }
+        }
     }
 
     function patchProblemComparisonTable() {
         var sec = document.getElementById("is-ts-1");
         if (!sec) return;
-        var wrap = sec.querySelector('.framer-12rkaoe-container div[style*="max-width:720px"]');
+        var wrap = resolveProblemComparisonWrap(sec);
         if (!wrap || wrap.querySelector("[data-nomad-problem-table]")) return;
         var outer = document.createElement("div");
         outer.setAttribute("data-nomad-problem-table", "1");
