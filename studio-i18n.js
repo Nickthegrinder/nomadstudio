@@ -499,6 +499,8 @@
      * Target order after Framer cleanup: six core rows + final “get started” (ex–FAQ 10).
      * If the export still has ten rows (01–10), remove venture rows 07–09 at indices 6–8 first.
      */
+    var FAQ_EXPECTED_QUESTION_COUNT = 7;
+
     var FAQ_QUESTION_ROWS = [
         "Do you work with businesses outside of Canada?",
         "What happens if we're not happy with the result?",
@@ -699,6 +701,42 @@
         }
     }
 
+    /**
+     * Framer often ships six FAQ shells after venture/ghost cleanup; clone the last accordion row
+     * until we have seven slots so “existing tools” stays its own row (see FAQ_QUESTION_ROWS).
+     */
+    function ensureFaqSevenQuestionRows() {
+        var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
+        if (!faqRoot) return;
+        var guard = 0;
+        while (guard < 12) {
+            guard++;
+            var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
+            if (qh.length >= FAQ_EXPECTED_QUESTION_COUNT) return;
+            if (qh.length === 0) return;
+            var templateRow = null;
+            var kids = faqRoot.children;
+            var i;
+            for (i = kids.length - 1; i >= 0; i--) {
+                var row = kids[i];
+                if (
+                    row &&
+                    row.classList &&
+                    row.classList.contains("ssr-variant") &&
+                    row.querySelector(".framer-74nljt h6")
+                ) {
+                    templateRow = row;
+                    break;
+                }
+            }
+            if (!templateRow) {
+                templateRow = faqRowRootFromQuestionH6(qh[qh.length - 1]);
+            }
+            if (!templateRow || !faqRoot.contains(templateRow)) return;
+            faqRoot.appendChild(templateRow.cloneNode(true));
+        }
+    }
+
     function findFaqItemContainer(h6) {
         var el = h6;
         for (var u = 0; u < 22 && el; u++) {
@@ -719,7 +757,10 @@
         if (!faqRoot) return;
         var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
         if (!qh || qh.length === 0) return;
-        var qRows = qh.length >= 7 ? FAQ_QUESTION_ROWS : FAQ_QUESTION_ROWS_SHORT;
+        var qRows =
+            qh.length >= FAQ_EXPECTED_QUESTION_COUNT
+                ? FAQ_QUESTION_ROWS
+                : FAQ_QUESTION_ROWS_SHORT;
         var n = Math.min(qh.length, qRows.length);
         var i;
         var t;
@@ -764,7 +805,10 @@
         if (!faqRoot) return;
         var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
         if (!qh || qh.length === 0) return;
-        var aRows = qh.length >= 7 ? FAQ_ANSWER_ROWS : FAQ_ANSWER_ROWS_SHORT;
+        var aRows =
+            qh.length >= FAQ_EXPECTED_QUESTION_COUNT
+                ? FAQ_ANSWER_ROWS
+                : FAQ_ANSWER_ROWS_SHORT;
         var n = Math.min(qh.length, aRows.length);
         var i;
         var row;
@@ -836,6 +880,7 @@
         patchCtaSubcopy();
         removeVentureFaqRows();
         removeFaqGhostRows();
+        ensureFaqSevenQuestionRows();
         patchFaqQuestionsFromStudio();
         patchFaqAccordionAnswers();
         patchFaqIndexBadges();
