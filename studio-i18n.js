@@ -642,25 +642,54 @@
         return out;
     }
 
+    function faqGhostLabelNorm(s) {
+        return ((s || "") + "")
+            .replace(/\u200b/g, "")
+            .replace(/\u00a0/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    function faqRowRootFromQuestionH6(h6) {
+        var root = h6.closest(".ssr-variant");
+        if (!root) root = h6.closest('[data-framer-name="Variant 1"]');
+        return root;
+    }
+
     /**
-     * Deletes empty FAQ accordion shells (e.g. deleted items 07–09) that still reserve height in Framer.
+     * Removes FAQ accordion shells that still take space: empty questions, index-only stubs, venture rows,
+     * or rows with no .framer-74nljt question (Framer “ghost” frames).
      */
     function removeFaqGhostRows() {
         var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
         if (!faqRoot) return;
         var toRemove = [];
-        var qh = faqRoot.querySelectorAll("h6");
+        var ventureQ = /how many ventures|venture doesn't work|how do i apply/i;
+        var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
         var k;
         var h;
         var label;
         var root;
         for (k = 0; k < qh.length; k++) {
             h = qh[k];
-            label = (h.textContent || "").replace(/\s+/g, " ").trim();
-            if (label.length > 0 && !/^(\d{1,2})\s*\/\s*$/.test(label)) continue;
-            root = h.closest(".ssr-variant") || h.closest('[data-framer-name="Variant 1"]');
+            label = faqGhostLabelNorm(h.textContent || "");
+            if (label.length !== 0 && !/^(\d{1,2})\s*\/\s*$/.test(label) && !ventureQ.test(label))
+                continue;
+            root = faqRowRootFromQuestionH6(h);
             if (!root || !faqRoot.contains(root)) continue;
             toRemove.push(root);
+        }
+        var kids = faqRoot.children;
+        for (k = 0; k < kids.length; k++) {
+            var rowEl = kids[k];
+            if (!rowEl || !rowEl.classList || !rowEl.classList.contains("ssr-variant")) continue;
+            var qel = rowEl.querySelector(".framer-74nljt h6");
+            if (!qel) {
+                toRemove.push(rowEl);
+                continue;
+            }
+            label = faqGhostLabelNorm(qel.textContent || "");
+            if (label.length === 0) toRemove.push(rowEl);
         }
         var deduped = faqRemovalDedupeRoots(toRemove);
         for (k = deduped.length - 1; k >= 0; k--) {
@@ -698,6 +727,35 @@
             t = qRows[i];
             if (!t || !qh[i]) continue;
             qh[i].textContent = t;
+        }
+    }
+
+    /**
+     * Left column indices are a separate h6 in .framer-tg7p11 (Geist Pixel Grid). Framer keeps old slot
+     * numbers (e.g. 10) after middle rows are deleted — re-sync to 01…07 after ghost removal + copy patch.
+     */
+    function patchFaqIndexBadges() {
+        var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
+        if (!faqRoot) return;
+        var qh = faqRoot.querySelectorAll(".framer-74nljt h6");
+        var i;
+        var q;
+        var bar;
+        var badge;
+        var num;
+        for (i = 0; i < qh.length; i++) {
+            q = qh[i];
+            bar = q.closest(".framer-1xm2enl");
+            badge = null;
+            if (bar) badge = bar.querySelector(".framer-tg7p11 h6");
+            if (!badge) {
+                var c = findFaqItemContainer(q);
+                if (c) badge = c.querySelector(".framer-tg7p11 h6");
+            }
+            if (!badge) continue;
+            num = String(i + 1);
+            if (num.length === 1) num = "0" + num;
+            badge.textContent = num;
         }
     }
 
@@ -780,6 +838,7 @@
         removeFaqGhostRows();
         patchFaqQuestionsFromStudio();
         patchFaqAccordionAnswers();
+        patchFaqIndexBadges();
     }
 
     function applySection02ProblemHeadline() {
