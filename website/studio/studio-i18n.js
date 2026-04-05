@@ -228,7 +228,7 @@
         ["02 / THE THESIS", "02 / THE PROBLEM"],
         ["how is equity split?", "what if we don't need custom tech?"],
         ["You can hire developers anywhere.", "You can hire IT consultants anywhere."],
-        ["Dev Shops", "Off-the-shelf Software"],
+        ["Dev Shops", "Off-the-shelf"],
         ["One Model.", "Not Everything Needs Software."],
         ["Skin in the game", "Flat fee. You own it. Done."],
         [
@@ -237,8 +237,6 @@
         ],
         ["Half the features you don't use.", ""],
         ["Monthly fees forever.", ""],
-        ["THE AGENCY WAY", "THE GENERIC APPROACH"],
-        ["THE NOMAD WAY", "THE NOMAD APPROACH"],
         [
             "we figure out why your team is stuck doing manual work, and we build the exact tools to fix it. ",
             "we work with business owners and organizations who are done with manual processes and off-the-shelf tools that don't fit. we audit what's broken, map what's possible, and build what actually works whether that's an automated workflow, a custom dashboard, or an AI integration your team will actually use. ",
@@ -246,10 +244,31 @@
 
         ["we want your business running smoothly. we don't want to sell you tech you don't need.", ""],
         ["no subscriptions. no bloated tech. just systems that work.", "no subscriptions. no bloated tech. flat fee. you own it."],
-        ["Scope grows. The clock keeps running.", "forces you to adapt your process to the tool"],
-        ["Deliverables tied to hours, not outcomes.", "monthly fees for features you never use"],
-        ["You bend to their process—not the reverse.", "your team works around it, not with it"],
-        ["Retainers that stretch without a finish line.", "support ticket. wait 3 days. still broken."],
+
+        ["domain expertise \u2192 we build \u2192 shared equity", "your process \u2192 we build \u2192 you own it"],
+        [
+            "domain expertise -> we build -> shared equity",
+            "your process \u2192 we build \u2192 you own it",
+        ],
+        ["built for the industry. not from inside it.", "You bend to their process \u2014 not the reverse."],
+        ["✕built for the industry. not from inside it.", "\u2715 You bend to their process \u2014 not the reverse."],
+        ["✕no distribution on launch day.", "\u2715 Deliverables tied to hours, not outcomes."],
+        ["✕wrong problem. learned it 12 months in.", "\u2715 Scope grows. The clock keeps running."],
+        ["✕18 months of runway. gone.", "\u2715 Retainers that stretch without a finish line."],
+        ["Built By Someone Who Guessed.", "Bill by the hour. Talk in circles."],
+        ["Built By Someone Who Knew.", "Flat fee. 20% upfront. 80% on delivery."],
+        ["THE INSIDER BLUEPRINT", "THE NOMAD WAY"],
+        ["THE OUTSIDER BET", "THE AGENCY WAY"],
+        ["How It Gets Built", "How a project runs"],
+        ["first version live", "you can use it early"],
+        ["lived it for years", "no tech for tech's sake"],
+        ["existing relationships", "before we build"],
+        ["unfair advantage", "we map real workflows"],
+        ["Problem Validation", "Honest fit"],
+        ["Industry Tenure", "Your operations"],
+        ["Speed to Market", "Delivery"],
+        ["Day 1 Pipeline", "Scope"],
+        ["10yr+", "Known"],
         ["we aren't looking for tech startups. ", ""],
         [
             "we work with business owners who are tired of administrative friction and manual data entry.",
@@ -764,6 +783,48 @@
         }
     }
 
+    function nukeVentureProblemStatBlocks(sec) {
+        if (!sec) return;
+        var snap = [];
+        var list = sec.getElementsByTagName("div");
+        var i;
+        for (i = 0; i < list.length; i++) snap.push(list[i]);
+        for (i = 0; i < snap.length; i++) {
+            var d = snap[i];
+            var tx = (d.textContent || "").replace(/\s+/g, " ").trim();
+            if (tx.length > 220) continue;
+            if (/TIME TO MARKET/i.test(tx) && /18mo/i.test(tx)) {
+                try {
+                    d.remove();
+                } catch (eVs1) {}
+                continue;
+            }
+            if (/DAY 1 CUSTOMERS/i.test(tx)) {
+                try {
+                    d.remove();
+                } catch (eVs2) {}
+                continue;
+            }
+            if (/OUTCOME/i.test(tx) && /\bdead\b/i.test(tx) && tx.length < 100) {
+                try {
+                    d.remove();
+                } catch (eVs3) {}
+                continue;
+            }
+            if (/Survival Rate/i.test(tx) && tx.length < 220) {
+                try {
+                    d.remove();
+                } catch (eVs4) {}
+                continue;
+            }
+            if (/Defensibility/i.test(tx) && tx.length < 200) {
+                try {
+                    d.remove();
+                } catch (eVs5) {}
+            }
+        }
+    }
+
     function getProblemPanelColumns(sec) {
         var leftCol = null;
         var rightCol = null;
@@ -771,7 +832,14 @@
         var red = sec.querySelector('span[style*="#ff6b6b"]');
         if (red && red.parentElement && red.parentElement.parentElement) {
             cand = red.parentElement.parentElement;
-            if ((cand.textContent || "").indexOf("Bill by the hour") !== -1) leftCol = cand;
+            var cta = cand.textContent || "";
+            if (
+                cta.indexOf("Bill by the hour") !== -1 ||
+                cta.indexOf("Built By Someone Who Guessed") !== -1 ||
+                cta.indexOf("THE OUTSIDER BET") !== -1 ||
+                (cta.indexOf("\u2715") !== -1 && cta.indexOf("wrong problem") !== -1)
+            )
+                leftCol = cand;
         }
         if (!leftCol) {
             leftCol = sec.querySelector('div[style*="border-right:1px solid #2a2a2a"]');
@@ -783,7 +851,13 @@
                 cand = cand.parentElement;
                 if (!cand || cand === sec) break;
                 var tx = cand.textContent || "";
-                if (tx.indexOf("THE AGENCY WAY") !== -1 && tx.indexOf("Bill by the hour") !== -1) {
+                if (
+                    (tx.indexOf("THE AGENCY WAY") !== -1 || tx.indexOf("THE OUTSIDER BET") !== -1) &&
+                    (tx.indexOf("Bill by the hour") !== -1 ||
+                        tx.indexOf("Built By Someone Who Guessed") !== -1 ||
+                        tx.indexOf("wrong problem") !== -1 ||
+                        tx.indexOf("Scope grows") !== -1)
+                ) {
                     leftCol = cand;
                     break;
                 }
@@ -794,11 +868,19 @@
             sec.querySelector('span[style*="rgb(200, 255, 0)"]');
         if (grn && grn.parentElement && grn.parentElement.parentElement) {
             cand = grn.parentElement.parentElement;
-            if ((cand.textContent || "").indexOf("Flat fee") !== -1) rightCol = cand;
+            var ctb = cand.textContent || "";
+            if (
+                ctb.indexOf("Flat fee") !== -1 ||
+                ctb.indexOf("Built By Someone Who Knew") !== -1 ||
+                ctb.indexOf("THE INSIDER BLUEPRINT") !== -1
+            )
+                rightCol = cand;
         }
         if (!rightCol && leftCol && leftCol.nextElementSibling) {
             cand = leftCol.nextElementSibling;
-            if ((cand.textContent || "").indexOf("THE NOMAD WAY") !== -1) rightCol = cand;
+            var ctc = cand.textContent || "";
+            if (ctc.indexOf("THE NOMAD WAY") !== -1 || ctc.indexOf("THE INSIDER BLUEPRINT") !== -1)
+                rightCol = cand;
         }
         if (!rightCol && grn) {
             cand = grn;
@@ -806,7 +888,13 @@
                 cand = cand.parentElement;
                 if (!cand || cand === sec) break;
                 var ty = cand.textContent || "";
-                if (ty.indexOf("THE NOMAD WAY") !== -1 && ty.indexOf("Flat fee") !== -1) {
+                if (
+                    (ty.indexOf("THE NOMAD WAY") !== -1 || ty.indexOf("THE INSIDER BLUEPRINT") !== -1) &&
+                    (ty.indexOf("Flat fee") !== -1 ||
+                        ty.indexOf("Built By Someone Who Knew") !== -1 ||
+                        ty.indexOf("domain expertise") !== -1 ||
+                        ty.indexOf("shared equity") !== -1)
+                ) {
                     rightCol = cand;
                     break;
                 }
@@ -830,6 +918,7 @@
         var sec = document.getElementById("is-ts-1");
         if (!sec) return;
         nukeProblemPanelDeckMetrics(sec);
+        nukeVentureProblemStatBlocks(sec);
         var cols = getProblemPanelColumns(sec);
         var left = cols.left;
         var right = cols.right;
@@ -884,7 +973,12 @@
                     if (grids[j].children.length === 4) {
                         var z = grids[j].children[0];
                         var zt = (z.textContent || "").trim();
-                        if (zt === "Your operations" || zt.indexOf("operations") !== -1) {
+                        if (
+                            zt === "Your operations" ||
+                            zt.indexOf("operations") !== -1 ||
+                            zt.indexOf("Industry Tenure") !== -1 ||
+                            zt.indexOf("Day 1 Pipeline") !== -1
+                        ) {
                             tileGrid = grids[j];
                             break;
                         }
@@ -918,18 +1012,28 @@
         }
     }
 
+    function wrapHasFramerProblemComparisonTable(wrap) {
+        var t = wrap.textContent || "";
+        return (
+            t.indexOf("Monthly retainer. You rent the work.") !== -1 &&
+            t.indexOf("Adapts you to it. Fees forever.") !== -1 &&
+            t.indexOf("Flat fee. You own it. Done.") !== -1
+        );
+    }
+
     function patchProblemComparisonTable() {
         var sec = document.getElementById("is-ts-1");
         if (!sec) return;
         var wrap = resolveProblemComparisonWrap(sec);
         if (!wrap || wrap.querySelector("[data-nomad-problem-table]")) return;
+        if (wrapHasFramerProblemComparisonTable(wrap)) return;
         var outer = document.createElement("div");
         outer.setAttribute("data-nomad-problem-table", "1");
         outer.style.cssText =
             "margin-top:18px;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden;font-family:inherit;font-size:11px;line-height:1.45;color:#e0e0e0;";
         var rows = [
             ["Investors", "Monthly retainer. You rent the work."],
-            ["Off-the-shelf Software", "Adapts you to it. Fees forever."],
+            ["Off-the-shelf", "Adapts you to it. Fees forever."],
             ["Nomad Studio", "Flat fee. You own it. Done."],
         ];
         var i;
