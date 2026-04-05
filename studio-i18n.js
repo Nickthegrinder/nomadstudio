@@ -252,9 +252,13 @@
         ],
         ["built for the industry. not from inside it.", "You bend to their process \u2014 not the reverse."],
         ["✕built for the industry. not from inside it.", "\u2715 You bend to their process \u2014 not the reverse."],
+        ["✕ built for the industry. not from inside it.", "\u2715 You bend to their process \u2014 not the reverse."],
         ["✕no distribution on launch day.", "\u2715 Deliverables tied to hours, not outcomes."],
+        ["✕ no distribution on launch day.", "\u2715 Deliverables tied to hours, not outcomes."],
         ["✕wrong problem. learned it 12 months in.", "\u2715 Scope grows. The clock keeps running."],
+        ["✕ wrong problem. learned it 12 months in.", "\u2715 Scope grows. The clock keeps running."],
         ["✕18 months of runway. gone.", "\u2715 Retainers that stretch without a finish line."],
+        ["✕ 18 months of runway. gone.", "\u2715 Retainers that stretch without a finish line."],
         ["Built By Someone Who Guessed.", "Bill by the hour. Talk in circles."],
         ["Built By Someone Who Knew.", "Flat fee. 20% upfront. 80% on delivery."],
         ["THE INSIDER BLUEPRINT", "THE NOMAD WAY"],
@@ -1174,6 +1178,33 @@
         });
     }
 
+    /**
+     * Framer hydration often replaces the Section 02 embed with live canvas copy *after* first paint.
+     * SSR HTML can already show “THE AGENCY WAY”; the client may still flash/revert to OUTSIDER / INSIDER.
+     * Re-run scrub + DOM fixes for #is-ts-1 on a stagger so we win after hydrate.
+     */
+    function runSection02Repair() {
+        var sec = document.getElementById("is-ts-1");
+        if (!sec) return;
+        walkTextNodes(sec, function (node) {
+            var raw = node.nodeValue;
+            var next = applySanitizeToText(raw);
+            if (next !== raw) node.nodeValue = next;
+        });
+        applySection02ProblemHeadline();
+        patchSection02ProblemBody();
+        patchProblemComparisonPanels();
+        patchProblemComparisonTable();
+    }
+
+    function scheduleSection02PostHydrateRepair() {
+        var delays = [120, 400, 900, 2000, 4500, 9000];
+        var i;
+        for (i = 0; i < delays.length; i++) {
+            setTimeout(runSection02Repair, delays[i]);
+        }
+    }
+
     function init() {
         applyDarkTokens();
 
@@ -1191,6 +1222,7 @@
 
         scrubDocument();
         applyDarkTokens();
+        scheduleSection02PostHydrateRepair();
 
         var root = document.getElementById("main");
         if (root && typeof MutationObserver !== "undefined") {
@@ -1200,8 +1232,9 @@
                 t = setTimeout(function () {
                     applyDarkTokens();
                     scrubDocument();
+                    runSection02Repair();
                     onMaybeCalOverlay();
-                }, 80);
+                }, 120);
             });
             obs.observe(root, { childList: true, subtree: true, characterData: true });
         }
@@ -1219,8 +1252,14 @@
             setTimeout(function () {
                 applyDarkTokens();
                 scrubDocument();
+                runSection02Repair();
                 onMaybeCalOverlay();
             }, ms);
+        });
+
+        window.addEventListener("load", function () {
+            setTimeout(runSection02Repair, 50);
+            setTimeout(runSection02Repair, 600);
         });
     }
 
