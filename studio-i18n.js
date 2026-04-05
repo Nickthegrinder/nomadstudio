@@ -661,6 +661,8 @@
     /**
      * Removes FAQ accordion shells that still take space: empty questions, index-only stubs, venture rows,
      * or rows with no .framer-74nljt question (Framer “ghost” frames).
+     * Also removes any *direct* child of the FAQ stack that is not a real question row — invisible
+     * accordion instances deleted in Framer often leave framer-*-container shells without .ssr-variant.
      */
     function removeFaqGhostRows() {
         var faqRoot = document.querySelector('[data-framer-name="FAQs"]');
@@ -684,7 +686,7 @@
         var kids = faqRoot.children;
         for (k = 0; k < kids.length; k++) {
             var rowEl = kids[k];
-            if (!rowEl || !rowEl.classList || !rowEl.classList.contains("ssr-variant")) continue;
+            if (!rowEl || rowEl.nodeType !== 1) continue;
             var qel = rowEl.querySelector(".framer-74nljt h6");
             if (!qel) {
                 toRemove.push(rowEl);
