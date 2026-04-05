@@ -22,6 +22,12 @@
     var HERO_LEDE =
         "we help established businesses in Canada cut the manual work, build the right systems, and actually use AI — without the bloat, the retainers, or the guesswork.";
 
+    var CTA_SUBCOPY_EXACT =
+        "zero bs. flat fee. smooth operations. private businesses and organizations welcome.";
+
+    var WHO_HELP_CASE_STUDY =
+        "recent work: a Montreal-based service business reduced weekly admin time by 12 hours after we replaced their manual reporting process with a custom automated dashboard. delivered in 4 weeks. flat fee. they own it.";
+
     var LEGACY_MONOGRAM = ["\u005bAG\u005d", "\u005bag\u005d"];
     var BRAND_TO = "[nomad]";
     var CONTACT_EMAIL = "team@nomadholdings.ca";
@@ -255,12 +261,6 @@
                 out = out.split(oldS).join(newS == null ? "" : newS);
             }
         }
-        var ctaSubShort = "zero bs. flat fee. smooth operations.";
-        var ctaSubLong =
-            "zero bs. flat fee. smooth operations. private businesses and organizations welcome.";
-        if ((out || "").trim() === ctaSubShort) {
-            out = ctaSubLong;
-        }
         return out;
     }
 
@@ -454,22 +454,22 @@
     }
 
     /**
-     * Framer SSR omits FAQ answer bodies; they mount after hydrate. Patch by accordion row index
-     * (01,02,03,04,05,07 → six question rows; we replace answers at 0,1,4,5 only).
+     * Framer export: six .framer-74nljt question rows. Venture-era slots 07–10 in Framer map to
+     * orgs / get-started (plus training + minimum folded per user copy when only six rows exist).
      */
     var FAQ_QUESTION_ROWS = [
         "Do you work with businesses outside of Canada?",
         "What happens if we're not happy with the result?",
         "what if we don't need custom tech?",
         "what do you actually build?",
-        "Can you work with our existing tools and software?",
-        "How do we get started?",
+        "do you work with organizations and institutions?",
+        "how do we get started?",
     ];
 
     var FAQ_ANSWER_ROWS = [
         {
             want:
-                "yes. we work remotely with businesses and organizations across north america. if your operations run on software and spreadsheets, we can help regardless of where you're based. non-profits and publicly funded organizations: we can align to fixed-scope and grant-funded delivery and provide the documentation you need — ask us about your requirements.",
+                "yes. we work remotely with businesses and organizations across north america. if your operations run on software and spreadsheets, we can help regardless of where you're based. we also run AI literacy workshops and process audits for teams and organizations. these are designed for non-technical staff — no coding background required. workshops are available in English and French. ask us about format and pricing.",
         },
         {
             want:
@@ -481,15 +481,15 @@
         },
         {
             want:
-                "automation workflows, internal tools, dashboards, integrations, and AI features your team will actually use. we scope to your operations, not a feature checklist.",
+                "automation workflows, internal tools, dashboards, integrations, and AI features your team will actually use. we scope to your operations, not a feature checklist. yes — we usually build around your existing tools; we only recommend replacing one when it's genuinely the bottleneck.",
         },
         {
             want:
-                "yes — that's usually the starting point. we build around what you already use. we only recommend replacing a tool if it's genuinely the bottleneck.",
+                "yes. we work with non-profits, funded programs, and public institutions on fixed-scope, fixed-fee contracts. if you run training programs, community services, or operational mandates and need AI or automation support — we can help. reach out at team@nomadholdings.ca to discuss scope.",
         },
         {
             want:
-                "send us a message at team@nomadholdings.ca or hit the let's talk button. we'll ask a few questions about your operations and let you know within 48 hours whether we can help.",
+                "no minimum. we've helped solo operators and mid-size teams. what matters is whether the problem is real and the scope is clear. if we can't make an impact, we'll tell you upfront. book a free 30-minute conversation. we'll map your biggest operational bottleneck, tell you honestly whether tech can fix it, and give you a flat-fee quote before anything moves forward. no obligation.",
         },
     ];
 
@@ -592,7 +592,9 @@
         patchProblemComparisonTitles();
         applySection02ProblemHeadline();
         applyWhoWeHelpHeadline();
+        patchWhoWeHelpCaseStudy();
         patchWhoWeHelpPricingParagraph();
+        patchCtaSubcopy();
         patchFaqQuestionsFromStudio();
         patchFaqAccordionAnswers();
     }
@@ -615,6 +617,22 @@
         }
     }
 
+    function patchWhoWeHelpCaseStudy() {
+        var sec = document.getElementById("is-ts-2");
+        if (!sec || sec.querySelector("[data-nomad-case-study]")) return;
+        var ul = sec.querySelector("ul");
+        if (!ul || !ul.parentNode) return;
+        var q = document.createElement("p");
+        q.setAttribute("data-nomad-case-study", "1");
+        q.className = "framer-text framer-styles-preset-2jn57a";
+        q.setAttribute("data-styles-preset", "zKLVRJClg");
+        q.dir = "auto";
+        q.style.cssText =
+            "margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.12);font-style:italic;--framer-text-color:rgba(250, 250, 250, 0.85)";
+        q.textContent = WHO_HELP_CASE_STUDY;
+        ul.parentNode.insertBefore(q, ul.nextSibling);
+    }
+
     function patchWhoWeHelpPricingParagraph() {
         var sec = document.getElementById("is-ts-2");
         if (!sec || sec.querySelector("[data-nomad-pricing-p]")) return;
@@ -622,7 +640,10 @@
         if (!ul || !ul.parentNode) return;
         var want =
             "private clients: we charge 20% upfront and 80% on delivery. zero risk. organizations & institutions: we work on fixed-scope, fixed-fee contracts. ask us about program delivery and training engagements.";
-        var next = ul.nextElementSibling;
+        var anchor = ul;
+        var afterUl = ul.nextElementSibling;
+        if (afterUl && afterUl.getAttribute("data-nomad-case-study") === "1") anchor = afterUl;
+        var next = anchor.nextElementSibling;
         if (next && (next.textContent || "").indexOf("private clients:") !== -1) return;
         var p = document.createElement("p");
         p.setAttribute("data-nomad-pricing-p", "1");
@@ -631,7 +652,36 @@
         p.dir = "auto";
         p.style.cssText = "--framer-text-color:rgba(250, 250, 250, 0.8)";
         p.textContent = want;
-        ul.parentNode.insertBefore(p, next);
+        anchor.parentNode.insertBefore(p, next);
+    }
+
+    function patchCtaSubcopy() {
+        var hi;
+        var headings = document.querySelectorAll("h2.framer-text, h2");
+        for (hi = 0; hi < headings.length; hi++) {
+            var h2 = headings[hi];
+            var tl = (h2.textContent || "").toLowerCase();
+            if (tl.indexOf("you run the business") === -1 || tl.indexOf("we build the systems") === -1)
+                continue;
+            var rtc = h2.closest('[data-framer-component-type="RichTextContainer"]');
+            if (!rtc) continue;
+            var sib = rtc.nextElementSibling;
+            if (!sib || sib.getAttribute("data-framer-component-type") !== "RichTextContainer") continue;
+            var ps = sib.querySelectorAll("p.framer-text, p");
+            var j;
+            if (ps.length) {
+                ps[0].textContent = CTA_SUBCOPY_EXACT;
+                for (j = 1; j < ps.length; j++) ps[j].remove();
+            } else {
+                sib.textContent = "";
+                var p = document.createElement("p");
+                p.className = "framer-text framer-styles-preset-2jn57a";
+                p.dir = "auto";
+                p.textContent = CTA_SUBCOPY_EXACT;
+                sib.appendChild(p);
+            }
+            return;
+        }
     }
 
     function patchNavLabels() {
