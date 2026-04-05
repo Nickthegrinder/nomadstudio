@@ -28,6 +28,9 @@
     var WHO_HELP_CASE_STUDY =
         "recent work: a Montreal-based service business reduced weekly admin time by 12 hours after we replaced their manual reporting process with a custom automated dashboard. delivered in 4 weeks. flat fee. they own it.";
 
+    var PROBLEM_SECTION_BODY =
+        "Most tools force you to adapt to them. You end up paying monthly for features you don't use, workarounds your team hates, and a system that still doesn't fit how you actually operate.";
+
     var LEGACY_MONOGRAM = ["\u005bAG\u005d", "\u005bag\u005d"];
     var BRAND_TO = "[nomad]";
     var CONTACT_EMAIL = "team@nomadholdings.ca";
@@ -676,8 +679,10 @@
         removeDuplicateHowWeWorkLine();
         patchNavLabels();
         patchHeroLede();
-        patchProblemComparisonTitles();
         applySection02ProblemHeadline();
+        patchSection02ProblemBody();
+        patchProblemAgencyColumnCleanup();
+        patchProblemComparisonTable();
         applyWhoWeHelpHeadline();
         patchWhoWeHelpCaseStudy();
         patchWhoWeHelpPricingParagraph();
@@ -694,6 +699,91 @@
         if (h2) {
             h2.textContent = "Off-the-shelf software wasn't built for your business.";
         }
+    }
+
+    function patchSection02ProblemBody() {
+        var sec = document.getElementById("is-ts-1");
+        if (!sec) return;
+        var rtc = sec.querySelector(".framer-8027iy");
+        if (!rtc) return;
+        var ps = rtc.querySelectorAll("p.framer-text");
+        if (!ps.length) return;
+        ps[0].textContent = PROBLEM_SECTION_BODY;
+        ps[0].setAttribute("data-nomad-problem-body", "1");
+        var i;
+        for (i = 1; i < ps.length; i++) {
+            ps[i].remove();
+        }
+    }
+
+    function patchProblemAgencyColumnCleanup() {
+        var sec = document.getElementById("is-ts-1");
+        if (!sec) return;
+        var wrap = sec.querySelector('.framer-12rkaoe-container div[style*="max-width:720px"]');
+        if (!wrap) return;
+        var grid = wrap.children[0];
+        if (!grid || (grid.getAttribute("style") || "").indexOf("grid-template-columns:1fr 1fr") === -1) return;
+        var left = grid.children[0];
+        if (!left) return;
+        var three = left.querySelector('div[style*="grid-template-columns:1fr 1fr 1fr"]');
+        if (three) three.remove();
+        var autoBlocks = left.querySelectorAll("div[style*='margin-top:auto']");
+        var k;
+        for (k = 0; k < autoBlocks.length; k++) {
+            if ((autoBlocks[k].textContent || "").indexOf("Satisfaction") !== -1) {
+                autoBlocks[k].remove();
+                break;
+            }
+        }
+        walkTextNodes(left, function (n) {
+            var v = n.nodeValue;
+            if (!v || v.indexOf("not the reverse") === -1) return;
+            if (/their process\s*[\u2013\u2014-]\s*not the reverse/i.test(v)) {
+                n.nodeValue = v.replace(
+                    /their process\s*[\u2013\u2014-]\s*not the reverse/gi,
+                    "their process \u2014 not the reverse"
+                );
+            }
+        });
+    }
+
+    function patchProblemComparisonTable() {
+        var sec = document.getElementById("is-ts-1");
+        if (!sec) return;
+        var wrap = sec.querySelector('.framer-12rkaoe-container div[style*="max-width:720px"]');
+        if (!wrap || wrap.querySelector("[data-nomad-problem-table]")) return;
+        var outer = document.createElement("div");
+        outer.setAttribute("data-nomad-problem-table", "1");
+        outer.style.cssText =
+            "margin-top:18px;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden;font-family:inherit;font-size:11px;line-height:1.45;color:#e0e0e0;";
+        var rows = [
+            ["Investors", "Monthly retainer. You rent the work."],
+            ["Off-the-shelf Software", "Adapts you to it. Fees forever."],
+            ["Nomad Studio", "Flat fee. You own it. Done."],
+        ];
+        var i;
+        var r;
+        var c0;
+        var c1;
+        for (i = 0; i < rows.length; i++) {
+            r = document.createElement("div");
+            r.style.cssText =
+                "display:grid;grid-template-columns:1fr 1.25fr;gap:14px;padding:14px 16px;background:#111111;border-top:" +
+                (i === 0 ? "none" : "1px solid #2a2a2a") +
+                ";align-items:start;";
+            c0 = document.createElement("div");
+            c0.style.cssText =
+                "color:#888;text-transform:uppercase;letter-spacing:0.06em;font-size:9px;font-family:Geist Mono, SF Mono, ui-monospace, monospace;";
+            c0.textContent = rows[i][0];
+            c1 = document.createElement("div");
+            c1.style.cssText =
+                "color:#e0e0e0;font-size:12px;font-family:Geist Mono, SF Mono, ui-monospace, monospace;";
+            c1.textContent = rows[i][1];
+            r.appendChild(c0);
+            r.appendChild(c1);
+            outer.appendChild(r);
+        }
+        wrap.appendChild(outer);
     }
 
     function applyWhoWeHelpHeadline() {
@@ -806,25 +896,6 @@
                 "margin-top:20px;max-width:36rem;font-size:clamp(16px,1.9vw,19px);line-height:1.45;color:rgba(250,250,250,0.78)";
             p.textContent = HERO_LEDE;
             rtc.appendChild(p);
-        });
-    }
-
-    function patchProblemComparisonTitles() {
-        var sec = document.getElementById("is-ts-1");
-        if (!sec) return;
-        walkTextNodes(sec, function (n) {
-            if ((n.nodeValue || "").trim() !== "Bill by the hour.") return;
-            var par = n.parentNode;
-            if (!par || (par.textContent || "").indexOf("Talk in circles") === -1) return;
-            par.textContent = "Built For Everyone. Works For No One.";
-        });
-        walkTextNodes(sec, function (n) {
-            if ((n.nodeValue || "").trim() !== "Flat fee.") return;
-            var par = n.parentNode;
-            if (!par) return;
-            var full = par.textContent || "";
-            if (full.indexOf("20%") === -1 || full.indexOf("80%") === -1) return;
-            par.textContent = "Built Around How You Actually Operate.";
         });
     }
 
