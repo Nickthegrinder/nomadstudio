@@ -125,3 +125,14 @@ body {
     line-height: 1;
     pointer-events: none;
 }
+
+/* Section 02 — keep Agency vs Nomad side-by-side after Framer hydrate */
+[data-framer-root] [data-nomad-problem-grid] {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100%;
+}
+
+[data-framer-root] [data-nomad-problem-grid] > * {
+    min-width: 0;
+}

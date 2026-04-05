@@ -755,13 +755,125 @@
         }
     }
 
-    function nukeProblemPanelDeckMetrics(sec) {
+    function isProblemGridColumnShell(d, grid) {
+        return !!(grid && d && (d === grid.children[0] || d === grid.children[1]));
+    }
+
+    /**
+     * Main comparison row: exactly two columns (AGENCY | NOMAD). Not the 3-up stat grid, not the 2×2 tile grid.
+     */
+    function looksLikeProblemComparisonGrid(g) {
+        if (!g || g.children.length !== 2) return false;
+        var t0 = ((g.children[0].textContent || "") + "").toUpperCase();
+        var t1 = ((g.children[1].textContent || "") + "").toUpperCase();
+        var agency =
+            t0.indexOf("AGENCY") !== -1 ||
+            t0.indexOf("OUTSIDER") !== -1 ||
+            t0.indexOf("BILL BY") !== -1 ||
+            t1.indexOf("AGENCY") !== -1 ||
+            t1.indexOf("OUTSIDER") !== -1 ||
+            t1.indexOf("BILL BY") !== -1;
+        var nomad =
+            t0.indexOf("NOMAD") !== -1 ||
+            t0.indexOf("INSIDER") !== -1 ||
+            t0.indexOf("FLAT FEE") !== -1 ||
+            t1.indexOf("NOMAD") !== -1 ||
+            t1.indexOf("INSIDER") !== -1 ||
+            t1.indexOf("FLAT FEE") !== -1;
+        return agency && nomad;
+    }
+
+    function findProblemTwoColumnGrid(sec) {
+        if (!sec) return null;
+        var divs = sec.getElementsByTagName("div");
+        var i;
+        var g;
+        var st;
+        var c0;
+        var s0;
+        for (i = 0; i < divs.length; i++) {
+            g = divs[i];
+            if (g.children.length !== 2) continue;
+            st = (g.getAttribute("style") || "").replace(/\s+/g, "");
+            if (st.indexOf("grid-template-columns") === -1) continue;
+            if (st.indexOf("1fr1fr1fr") !== -1) continue;
+            if (st.indexOf("1fr1fr") === -1) continue;
+            c0 = g.children[0];
+            s0 = (c0.getAttribute("style") || "").replace(/\s+/g, "");
+            if (
+                (s0.indexOf("min-height:400px") !== -1 || s0.indexOf("border-right:1pxsolid#2a2a2a") !== -1) &&
+                looksLikeProblemComparisonGrid(g)
+            )
+                return g;
+        }
+        for (i = 0; i < divs.length; i++) {
+            g = divs[i];
+            if (g.children.length !== 2) continue;
+            st = (g.getAttribute("style") || "").replace(/\s+/g, "");
+            if (st.indexOf("grid-template-columns") === -1) continue;
+            if (st.indexOf("1fr1fr1fr") !== -1) continue;
+            if (st.indexOf("1fr1fr") !== -1 && looksLikeProblemComparisonGrid(g)) return g;
+        }
+        return null;
+    }
+
+    function assignColumnsFromGrid(grid) {
+        if (!grid || grid.children.length !== 2) return { left: null, right: null };
+        var a = grid.children[0];
+        var b = grid.children[1];
+        var ua = (a.textContent || "").toUpperCase();
+        var ub = (b.textContent || "").toUpperCase();
+        var aNomad =
+            ua.indexOf("THE NOMAD WAY") !== -1 ||
+            ua.indexOf("THE INSIDER") !== -1 ||
+            (ua.indexOf("FLAT FEE") !== -1 && ua.indexOf("NOMAD") !== -1);
+        var bNomad =
+            ub.indexOf("THE NOMAD WAY") !== -1 ||
+            ub.indexOf("THE INSIDER") !== -1 ||
+            (ub.indexOf("FLAT FEE") !== -1 && ub.indexOf("AGENCY") === -1 && ub.indexOf("OUTSIDER") === -1);
+        var aAgency =
+            ua.indexOf("THE AGENCY WAY") !== -1 ||
+            ua.indexOf("THE OUTSIDER") !== -1 ||
+            ua.indexOf("BILL BY THE HOUR") !== -1 ||
+            ua.indexOf("WHO GUESSED") !== -1;
+        var bAgency =
+            ub.indexOf("THE AGENCY WAY") !== -1 ||
+            ub.indexOf("THE OUTSIDER") !== -1 ||
+            ub.indexOf("BILL BY THE HOUR") !== -1 ||
+            ub.indexOf("WHO GUESSED") !== -1;
+        if (aAgency && !bAgency) return { left: a, right: b };
+        if (bAgency && !aAgency) return { left: b, right: a };
+        if (aNomad && !bNomad) return { left: b, right: a };
+        if (bNomad && !aNomad) return { left: a, right: b };
+        return { left: a, right: b };
+    }
+
+    function enforceProblemComparisonLayout(grid) {
+        if (!grid) return;
+        try {
+            grid.setAttribute("data-nomad-problem-grid", "1");
+            grid.style.setProperty("display", "grid", "important");
+            grid.style.setProperty("grid-template-columns", "1fr 1fr", "important");
+            var i;
+            for (i = 0; i < grid.children.length; i++) {
+                var col = grid.children[i];
+                if (!col || col.style === undefined) continue;
+                col.style.setProperty("display", "flex", "important");
+                col.style.setProperty("flex-direction", "column", "important");
+                col.style.setProperty("visibility", "visible", "important");
+                col.style.setProperty("opacity", "1", "important");
+            }
+        } catch (eEnf) {}
+    }
+
+    function nukeProblemPanelDeckMetrics(sec, grid) {
         if (!sec) return;
         var list = sec.getElementsByTagName("div");
         var i;
         var snap = [];
         for (i = 0; i < list.length; i++) snap.push(list[i]);
         for (i = 0; i < snap.length; i++) {
+            if (isProblemGridColumnShell(snap[i], grid)) continue;
             var st = (snap[i].getAttribute("style") || "").replace(/\s+/g, "");
             if (st.indexOf("grid-template-columns:1fr1fr1fr") !== -1) {
                 try {
@@ -775,6 +887,7 @@
         var kill = [];
         for (i = 0; i < snap.length; i++) {
             var d = snap[i];
+            if (isProblemGridColumnShell(d, grid)) continue;
             var st2 = d.getAttribute("style") || "";
             if (st2.indexOf("margin-top:auto") === -1) continue;
             var t = (d.textContent || "").replace(/\s+/g, " ").trim();
@@ -788,7 +901,7 @@
         }
     }
 
-    function nukeVentureProblemStatBlocks(sec) {
+    function nukeVentureProblemStatBlocks(sec, grid) {
         if (!sec) return;
         var snap = [];
         var list = sec.getElementsByTagName("div");
@@ -796,8 +909,9 @@
         for (i = 0; i < list.length; i++) snap.push(list[i]);
         for (i = 0; i < snap.length; i++) {
             var d = snap[i];
+            if (isProblemGridColumnShell(d, grid)) continue;
             var tx = (d.textContent || "").replace(/\s+/g, " ").trim();
-            if (tx.length > 220) continue;
+            if (tx.length > 120) continue;
             if (/TIME TO MARKET/i.test(tx) && /18mo/i.test(tx)) {
                 try {
                     d.remove();
@@ -816,13 +930,13 @@
                 } catch (eVs3) {}
                 continue;
             }
-            if (/survival\s+rate/i.test(tx) && tx.length < 220) {
+            if (/survival\s+rate/i.test(tx) && tx.length < 120) {
                 try {
                     d.remove();
                 } catch (eVs4) {}
                 continue;
             }
-            if (/Defensibility/i.test(tx) && tx.length < 200) {
+            if (/Defensibility/i.test(tx) && tx.length < 120) {
                 try {
                     d.remove();
                 } catch (eVs5) {}
@@ -830,7 +944,7 @@
         }
     }
 
-    function getProblemPanelColumns(sec) {
+    function getProblemPanelColumnsFallback(sec) {
         var leftCol = null;
         var rightCol = null;
         var cand;
@@ -908,11 +1022,17 @@
         return { left: leftCol, right: rightCol };
     }
 
+    function getProblemPanelColumns(sec) {
+        var grid = findProblemTwoColumnGrid(sec);
+        if (grid) return assignColumnsFromGrid(grid);
+        return getProblemPanelColumnsFallback(sec);
+    }
+
     function resolveProblemComparisonWrap(sec) {
+        var grid = findProblemTwoColumnGrid(sec);
+        if (grid && grid.parentElement) return grid.parentElement;
         var cols = getProblemPanelColumns(sec);
-        if (cols.left && cols.left.parentElement && cols.left.parentElement.parentElement) {
-            return cols.left.parentElement.parentElement;
-        }
+        if (cols.left && cols.left.parentElement) return cols.left.parentElement;
         return (
             sec.querySelector('.framer-12rkaoe-container div[style*="max-width:720px"]') ||
             sec.querySelector('div[style*="max-width:720px"]')
@@ -1021,11 +1141,39 @@
         });
     }
 
+    function patchProblemPipelineRow(right) {
+        if (!right) return;
+        walkTextNodes(right, function (n) {
+            var v = n.nodeValue;
+            if (!v) return;
+            var o = v;
+            if (/domain expertise/gi.test(v)) v = v.replace(/domain expertise/gi, "your process");
+            if (/\bshared equity\b/gi.test(v)) v = v.replace(/\bshared equity\b/gi, "you own it");
+            if (v !== o) n.nodeValue = v;
+        });
+        var j;
+        var pipeRows = right.querySelectorAll("div[style*='justify-content:space-between']");
+        var pr;
+        var chips;
+        for (j = 0; j < pipeRows.length; j++) {
+            pr = pipeRows[j];
+            chips = pr.querySelectorAll("div[style*='white-space:nowrap']");
+            if (chips.length === 3) {
+                chips[0].textContent = "your process";
+                chips[1].textContent = "we build";
+                chips[2].textContent = "you own it";
+                return;
+            }
+        }
+    }
+
     function patchProblemComparisonPanels() {
         var sec = document.getElementById("is-ts-1");
         if (!sec) return;
-        nukeProblemPanelDeckMetrics(sec);
-        nukeVentureProblemStatBlocks(sec);
+        var grid = findProblemTwoColumnGrid(sec);
+        nukeProblemPanelDeckMetrics(sec, grid);
+        nukeVentureProblemStatBlocks(sec, grid);
+        enforceProblemComparisonLayout(grid);
         var cols = getProblemPanelColumns(sec);
         var left = cols.left;
         var right = cols.right;
@@ -1074,19 +1222,7 @@
                     }
                 }
             }
-            var pipeRows = right.querySelectorAll("div[style*='justify-content:space-between']");
-            var pr;
-            var chips;
-            for (j = 0; j < pipeRows.length; j++) {
-                pr = pipeRows[j];
-                chips = pr.querySelectorAll("div[style*='white-space:nowrap']");
-                if (chips.length === 3) {
-                    chips[0].textContent = "your process";
-                    chips[1].textContent = "we build";
-                    chips[2].textContent = "you own it";
-                    break;
-                }
-            }
+            patchProblemPipelineRow(right);
         }
     }
 
