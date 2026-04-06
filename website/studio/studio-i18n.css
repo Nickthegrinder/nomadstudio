@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");
 
 /* -------------------------------------------------------------------------- */
 /* Nomad Studio — dark canvas (matches main Nomad Capital static site)         */
@@ -14,6 +14,7 @@
     --nomad-surface: #1a1a1a;
     --nomad-border: rgba(255, 255, 255, 0.1);
     --nomad-mono: "IBM Plex Mono", ui-monospace, monospace;
+    --nomad-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     --nomad-violet: #a855f7;
     --token-9038913d-9542-4e7c-8f1d-6d793c435842: var(--nomad-canvas) !important;
     --token-b6079f2c-86e5-4fdb-b1bc-5a74a51795f3: var(--nomad-canvas) !important;
@@ -140,6 +141,66 @@ body {
     color: var(--nomad-ink-muted);
     max-width: 42rem;
     margin: 0;
+}
+
+/* POV article — Nomad Capital “ideas”-style list / detail */
+[data-framer-root] .nomad-article {
+    width: 100%;
+    max-width: 40rem;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 4vw, 40px) clamp(64px, 10vw, 120px);
+    scroll-margin-top: 72px;
+}
+
+[data-framer-root] .nomad-article__label {
+    display: inline-block;
+    font-family: var(--nomad-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: lowercase;
+    color: rgba(240, 240, 240, 0.52);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 7px;
+    text-decoration-color: rgba(240, 240, 240, 0.35);
+    margin: 0 0 clamp(28px, 5vw, 44px);
+}
+
+[data-framer-root] .nomad-article__title {
+    font-family: var(--nomad-sans);
+    font-size: clamp(1.65rem, 4vw, 2.35rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--nomad-ink);
+    margin: 0 0 14px;
+}
+
+[data-framer-root] .nomad-article__date {
+    font-family: var(--nomad-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: none;
+    color: rgba(240, 240, 240, 0.45);
+    margin: 0 0 clamp(36px, 6vw, 56px);
+}
+
+[data-framer-root] .nomad-article__body {
+    font-family: var(--nomad-sans);
+    font-size: clamp(16px, 1.55vw, 18px);
+    font-weight: 400;
+    line-height: 1.65;
+    color: rgba(240, 240, 240, 0.82);
+}
+
+[data-framer-root] .nomad-article__body p {
+    margin: 0 0 1.35em;
+}
+
+[data-framer-root] .nomad-article__body p:last-child {
+    margin-bottom: 0;
 }
 
 /* Headings & copy */
