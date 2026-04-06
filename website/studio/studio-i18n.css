@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap");
 
 /* -------------------------------------------------------------------------- */
 /* Nomad Studio — dark canvas (matches main Nomad Capital static site)         */
@@ -13,6 +13,8 @@
     --nomad-ink-muted: rgba(240, 240, 240, 0.65);
     --nomad-surface: #1a1a1a;
     --nomad-border: rgba(255, 255, 255, 0.1);
+    --nomad-mono: "IBM Plex Mono", ui-monospace, monospace;
+    --nomad-violet: #a855f7;
     --token-9038913d-9542-4e7c-8f1d-6d793c435842: var(--nomad-canvas) !important;
     --token-b6079f2c-86e5-4fdb-b1bc-5a74a51795f3: var(--nomad-canvas) !important;
 }
@@ -34,6 +36,72 @@ body {
 [data-framer-root] {
     background-color: var(--nomad-canvas);
     color: var(--nomad-ink);
+}
+
+/* Fixed editorial links — Nomad Capital–style (top right) */
+[data-framer-root] > [data-nomad-header-util] {
+    position: fixed;
+    top: clamp(18px, 2.5vw, 28px);
+    right: clamp(16px, 4vw, 56px);
+    z-index: 100;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: clamp(20px, 3vw, 32px);
+    font-family: var(--nomad-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+    line-height: 1;
+}
+
+[data-framer-root] > [data-nomad-header-util] a {
+    color: rgba(240, 240, 240, 0.58);
+    text-decoration: none;
+}
+
+[data-framer-root] > [data-nomad-header-util] a:hover {
+    color: var(--nomad-violet);
+}
+
+/* POV / About sections (scroll targets) — inserted before FAQs */
+[data-framer-root] .nomad-editorial-block {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: clamp(48px, 6vw, 80px) clamp(20px, 4vw, 40px);
+    border-top: 1px solid var(--nomad-border);
+    scroll-margin-top: 72px;
+}
+
+[data-framer-root] .nomad-editorial-block__kicker {
+    font-family: var(--nomad-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+    color: rgba(240, 240, 240, 0.5);
+    margin: 0 0 12px;
+}
+
+[data-framer-root] .nomad-editorial-block__title {
+    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+    font-size: clamp(1.75rem, 3.2vw, 2.25rem);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    color: var(--nomad-ink);
+    margin: 0 0 16px;
+}
+
+[data-framer-root] .nomad-editorial-block__body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: clamp(15px, 1.5vw, 17px);
+    line-height: 1.55;
+    color: var(--nomad-ink-muted);
+    max-width: 42rem;
+    margin: 0;
 }
 
 /* Headings & copy */
@@ -186,6 +254,7 @@ body {
     white-space: nowrap;
     line-height: 1;
     pointer-events: none;
+    z-index: 0;
 }
 
 /* Section 02 — keep Agency vs Nomad side-by-side after Framer hydrate */

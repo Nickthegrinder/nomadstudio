@@ -54,6 +54,11 @@
     var MAILTO_LETS_TALK =
         "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Let's talk — Nomad Studio");
 
+    var NOMAD_POV_SECTION_BODY =
+        "We start from how work actually gets done — not from a vendor deck. If automation does not change decisions, throughput, or risk, it is decoration.";
+    var NOMAD_ABOUT_SECTION_BODY =
+        "We build internal tools and automations for teams that run on spreadsheets, email, and legacy software — fixed scope, fixed pricing, and no obligation until the problem is understood.";
+
     var mailtoNavLockUntil = 0;
 
     function isCalUrl(s) {
@@ -970,6 +975,79 @@
         }
     }
 
+    function patchNomadLogoHomeLink() {
+        var logo = document.querySelector('[data-framer-name="logo"]');
+        if (!logo || logo.getAttribute("data-nomad-home-wrapped") === "1") return;
+        var existing = logo.closest("a");
+        if (existing) {
+            existing.setAttribute("href", "/");
+            existing.setAttribute("aria-label", "Nomad home");
+            logo.setAttribute("data-nomad-home-wrapped", "1");
+            return;
+        }
+        var par = logo.parentNode;
+        if (!par) return;
+        var a = document.createElement("a");
+        a.href = "/";
+        a.setAttribute("aria-label", "Nomad home");
+        a.style.cssText = "color:inherit;text-decoration:none;display:contents";
+        par.insertBefore(a, logo);
+        a.appendChild(logo);
+        logo.setAttribute("data-nomad-home-wrapped", "1");
+    }
+
+    function injectNomadPovAboutChrome() {
+        var root = document.querySelector("[data-framer-root]");
+        var main = document.getElementById("main");
+        if (!root || !main) return;
+        if (!document.querySelector("[data-nomad-header-util]")) {
+            var nav = document.createElement("nav");
+            nav.setAttribute("data-nomad-header-util", "1");
+            nav.setAttribute("aria-label", "Editorial");
+            var l1 = document.createElement("a");
+            l1.href = "#nomad-pov";
+            l1.textContent = "pov";
+            var l2 = document.createElement("a");
+            l2.href = "#nomad-about";
+            l2.textContent = "about";
+            nav.appendChild(l1);
+            nav.appendChild(l2);
+            root.insertBefore(nav, root.firstChild);
+        }
+        if (document.getElementById("nomad-pov")) return;
+        var faq = main.querySelector('[data-framer-name="FAQs"]');
+        if (!faq || !faq.parentNode) return;
+
+        function editorialSection(id, kicker, title, body) {
+            var sec = document.createElement("section");
+            sec.id = id;
+            sec.className = "nomad-editorial-block";
+            sec.setAttribute("data-nomad-editorial", "1");
+            var k = document.createElement("p");
+            k.className = "nomad-editorial-block__kicker";
+            k.textContent = kicker;
+            var h = document.createElement("h2");
+            h.className = "nomad-editorial-block__title";
+            h.textContent = title;
+            var p = document.createElement("p");
+            p.className = "nomad-editorial-block__body";
+            p.textContent = body;
+            sec.appendChild(k);
+            sec.appendChild(h);
+            sec.appendChild(p);
+            return sec;
+        }
+        var sPov = editorialSection("nomad-pov", "pov", "How we see operations", NOMAD_POV_SECTION_BODY);
+        var sAbout = editorialSection(
+            "nomad-about",
+            "about",
+            "Working with Nomad",
+            NOMAD_ABOUT_SECTION_BODY
+        );
+        faq.parentNode.insertBefore(sAbout, faq);
+        faq.parentNode.insertBefore(sPov, sAbout);
+    }
+
     function scrubDocument() {
         walkTextNodes(document.body, function (node) {
             var raw = node.nodeValue;
@@ -981,6 +1059,8 @@
         applyMeta();
         removeDuplicateHowWeWorkLine();
         patchNavLabels();
+        patchNomadLogoHomeLink();
+        injectNomadPovAboutChrome();
         patchHeroLede();
         applySection02ProblemHeadline();
         patchSection02ProblemBody();
