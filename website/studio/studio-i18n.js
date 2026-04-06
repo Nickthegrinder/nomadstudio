@@ -993,9 +993,12 @@
 
     function injectNomadPovAboutChrome() {
         var root = document.querySelector("[data-framer-root]");
-        if (!root) return;
-        if (!document.querySelector("[data-nomad-header-util]")) {
-            var nav = document.createElement("nav");
+        var shell = document.getElementById("main");
+        if (!root || !shell) return;
+        var studioHome = root.parentElement === shell;
+        var nav = document.querySelector("[data-nomad-header-util]");
+        if (!nav && studioHome) {
+            nav = document.createElement("nav");
             nav.setAttribute("data-nomad-header-util", "1");
             nav.setAttribute("aria-label", "Editorial");
             var l1 = document.createElement("a");
@@ -1006,7 +1009,9 @@
             l2.textContent = "about";
             nav.appendChild(l1);
             nav.appendChild(l2);
-            root.insertBefore(nav, root.firstChild);
+            shell.insertBefore(nav, shell.firstChild);
+        } else if (nav && studioHome && nav.parentElement !== shell) {
+            shell.insertBefore(nav, shell.firstChild);
         }
     }
 

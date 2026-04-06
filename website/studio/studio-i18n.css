@@ -39,9 +39,15 @@ body {
     color: var(--nomad-ink);
 }
 
-/* Editorial links — top right; absolute so they scroll with the page (not viewport-fixed) */
+/* Framer export: outer scroll shell is #main; editorial nav is injected as its first child */
+#main {
+    position: relative;
+}
+
+/* Absolute vs outer #main (studio home) or framer-root (POV/About subpages) — scrolls with page */
+#main > [data-nomad-header-util],
 [data-framer-root] > [data-nomad-header-util] {
-    position: absolute;
+    position: absolute !important;
     top: clamp(18px, 2.5vw, 28px);
     right: clamp(16px, 4vw, 56px);
     z-index: 100;
@@ -57,15 +63,18 @@ body {
     line-height: 1;
 }
 
+#main > [data-nomad-header-util] a,
 [data-framer-root] > [data-nomad-header-util] a {
     color: rgba(240, 240, 240, 0.58);
     text-decoration: none;
 }
 
+#main > [data-nomad-header-util] a:hover,
 [data-framer-root] > [data-nomad-header-util] a:hover {
     color: var(--nomad-violet);
 }
 
+#main > [data-nomad-header-util] a[aria-current="page"],
 [data-framer-root] > [data-nomad-header-util] a[aria-current="page"] {
     color: var(--nomad-ink);
     pointer-events: none;
