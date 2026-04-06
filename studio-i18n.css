@@ -34,13 +34,14 @@ body {
 }
 
 [data-framer-root] {
+    position: relative;
     background-color: var(--nomad-canvas);
     color: var(--nomad-ink);
 }
 
-/* Fixed editorial links — Nomad Capital–style (top right) */
+/* Editorial links — top right; absolute so they scroll with the page (not viewport-fixed) */
 [data-framer-root] > [data-nomad-header-util] {
-    position: fixed;
+    position: absolute;
     top: clamp(18px, 2.5vw, 28px);
     right: clamp(16px, 4vw, 56px);
     z-index: 100;
@@ -70,9 +71,9 @@ body {
     pointer-events: none;
 }
 
-/* Fixed [nomad] home — standalone POV / About pages */
+/* [nomad] home — standalone POV / About pages (scrolls with page) */
 [data-framer-root] > a.nomad-subpage-home {
-    position: fixed;
+    position: absolute;
     top: clamp(18px, 2.5vw, 28px);
     left: clamp(16px, 4vw, 56px);
     z-index: 100;
