@@ -65,7 +65,35 @@ body {
     color: var(--nomad-violet);
 }
 
-/* POV / About sections (scroll targets) — inserted before FAQs */
+[data-framer-root] > [data-nomad-header-util] a[aria-current="page"] {
+    color: var(--nomad-ink);
+    pointer-events: none;
+}
+
+/* Fixed [nomad] home — standalone POV / About pages */
+[data-framer-root] > a.nomad-subpage-home {
+    position: fixed;
+    top: clamp(18px, 2.5vw, 28px);
+    left: clamp(16px, 4vw, 56px);
+    z-index: 100;
+    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+    font-size: clamp(1.15rem, 2.2vw, 1.4rem);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--nomad-ink);
+    text-decoration: none;
+}
+
+[data-framer-root] > a.nomad-subpage-home:hover {
+    color: var(--nomad-violet);
+}
+
+.nomad-subpage-main {
+    min-height: 100vh;
+    padding-top: clamp(72px, 12vw, 120px);
+}
+
+/* POV / About editorial typography (standalone pages; formerly injected before FAQs) */
 [data-framer-root] .nomad-editorial-block {
     width: 100%;
     max-width: 1100px;
