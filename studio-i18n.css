@@ -347,6 +347,11 @@ body {
     color: rgba(255, 255, 255, 0.85) !important;
 }
 
+/* Who we help: after removing injected paragraphs, keep section breathing room */
+[data-framer-root] #is-ts-2 ul {
+    margin-bottom: clamp(18px, 3vw, 28px) !important;
+}
+
 /* Hairline borders on dark */
 [data-framer-root] [style*="border-color:rgba(250, 250, 250, 0.3)"] {
     --border-color: var(--nomad-border) !important;

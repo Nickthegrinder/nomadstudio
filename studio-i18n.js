@@ -1034,8 +1034,7 @@
         patchProblemComparisonPanels();
         patchProblemComparisonTable();
         applyWhoWeHelpHeadline();
-        patchWhoWeHelpCaseStudy();
-        patchWhoWeHelpPricingParagraph();
+        removeWhoWeHelpInjectedParas();
         patchCtaSubcopy();
         removeVentureFaqRows();
         removeFaqGhostRows();
@@ -1046,6 +1045,15 @@
         patchFaqIndexBadges();
         normalizeFaqListSpacing();
         normalizeFaqClosedAnswerSlots();
+    }
+
+    function removeWhoWeHelpInjectedParas() {
+        var sec = document.getElementById("is-ts-2");
+        if (!sec) return;
+        var a = sec.querySelector('[data-nomad-case-study="1"]');
+        if (a) a.remove();
+        var b = sec.querySelector('[data-nomad-pricing-p="1"]');
+        if (b) b.remove();
     }
 
     function applySection02ProblemHeadline() {
