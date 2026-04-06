@@ -203,6 +203,93 @@ body {
     margin-bottom: 0;
 }
 
+/* POV index — Nomad Capital “ideas”-style list */
+[data-framer-root] .nomad-pov-index {
+    width: 100%;
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 4vw, 40px) clamp(64px, 10vw, 120px);
+    scroll-margin-top: 72px;
+}
+
+[data-framer-root] .nomad-pov-index .nomad-article__label {
+    margin-bottom: clamp(20px, 3vw, 28px);
+}
+
+[data-framer-root] .nomad-pov-index__tagline {
+    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+    font-size: clamp(1.85rem, 4.5vw, 2.75rem);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+    color: var(--nomad-ink);
+    margin: 0 0 16px;
+}
+
+[data-framer-root] .nomad-pov-index__deck {
+    font-family: var(--nomad-sans);
+    font-size: clamp(15px, 1.45vw, 17px);
+    line-height: 1.55;
+    color: rgba(240, 240, 240, 0.58);
+    margin: 0 0 clamp(36px, 6vw, 52px);
+    max-width: 36rem;
+}
+
+[data-framer-root] .nomad-article-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--nomad-border);
+}
+
+[data-framer-root] .nomad-article-list__item {
+    margin: 0;
+    padding: clamp(28px, 4vw, 40px) 0;
+    border-bottom: 1px solid var(--nomad-border);
+}
+
+[data-framer-root] .nomad-article-list__item:last-child {
+    border-bottom: none;
+}
+
+[data-framer-root] .nomad-article-list__link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+[data-framer-root] .nomad-article-list__link:hover .nomad-article-list__title {
+    color: var(--nomad-violet);
+}
+
+[data-framer-root] .nomad-article-list__title {
+    font-family: var(--nomad-sans);
+    font-size: clamp(1.15rem, 2.4vw, 1.4rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    color: var(--nomad-ink);
+    margin: 0 0 10px;
+    transition: color 0.15s ease;
+}
+
+[data-framer-root] .nomad-article-list__summary {
+    font-family: var(--nomad-sans);
+    font-size: clamp(14px, 1.35vw, 16px);
+    line-height: 1.5;
+    color: rgba(240, 240, 240, 0.55);
+    margin: 0 0 12px;
+}
+
+[data-framer-root] .nomad-article-list__date {
+    font-family: var(--nomad-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: rgba(240, 240, 240, 0.42);
+    margin: 0;
+}
+
 /* Headings & copy */
 [data-framer-root] p.framer-text,
 [data-framer-root] h1.framer-text,
