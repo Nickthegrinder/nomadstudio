@@ -1604,6 +1604,10 @@
             c1.style.cssText =
                 "color:#e0e0e0;font-size:12px;font-family:Geist Mono, SF Mono, ui-monospace, monospace;";
             c1.textContent = rows[i][1];
+            if (rows[i][0] === "Nomad Studio") {
+                c0.style.color = "#c8ff00";
+                c1.style.color = "#c8ff00";
+            }
             r.appendChild(c0);
             r.appendChild(c1);
             outer.appendChild(r);
