@@ -147,8 +147,8 @@ body {
     font-size: clamp(15px, 1.5vw, 17px);
     line-height: 1.55;
     color: var(--nomad-ink-muted);
-    max-width: 42rem;
-    margin: 0;
+    max-width: 780px;
+    margin: 0 auto;
 }
 
 /* POV article — Nomad Capital “ideas”-style list / detail */
@@ -214,9 +214,8 @@ body {
 /* POV index — Nomad Capital “ideas”: left column, serif tagline, sans list */
 [data-framer-root] .nomad-pov-index {
     width: 100%;
-    max-width: 42rem;
-    margin: 0;
-    margin-right: auto;
+    max-width: 780px;
+    margin: 0 auto;
     padding: 0 0 clamp(64px, 10vw, 120px);
     scroll-margin-top: 72px;
 }
