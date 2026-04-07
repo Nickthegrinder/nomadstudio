@@ -123,32 +123,41 @@ body {
 }
 
 [data-framer-root] .nomad-editorial-block__kicker {
-    font-family: var(--nomad-mono);
-    font-size: 11px;
+    font-family: var(--nomad-sans);
+    font-size: 12px;
     font-weight: 500;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.06em;
     text-transform: lowercase;
-    color: rgba(240, 240, 240, 0.5);
-    margin: 0 0 12px;
+    color: rgba(240, 240, 240, 0.48);
+    margin: 0 0 clamp(14px, 2vw, 18px);
 }
 
 [data-framer-root] .nomad-editorial-block__title {
     font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
-    font-size: clamp(1.75rem, 3.2vw, 2.25rem);
+    font-size: clamp(2rem, 4.2vw, 2.85rem);
     font-weight: 400;
     letter-spacing: 0.02em;
-    line-height: 1.2;
+    line-height: 1.15;
     color: var(--nomad-ink);
-    margin: 0 0 16px;
+    margin: 0 0 clamp(20px, 3vw, 28px);
 }
 
 [data-framer-root] .nomad-editorial-block__body {
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    font-size: clamp(15px, 1.5vw, 17px);
-    line-height: 1.55;
-    color: var(--nomad-ink-muted);
+    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+    font-size: clamp(16px, 1.65vw, 18px);
+    font-weight: 400;
+    line-height: 1.65;
+    color: rgba(240, 240, 240, 0.72);
     max-width: 100%;
     margin: 0;
+}
+
+[data-framer-root] .nomad-editorial-block__body p {
+    margin: 0 0 1.35em;
+}
+
+[data-framer-root] .nomad-editorial-block__body p:last-child {
+    margin-bottom: 0;
 }
 
 /* POV article — Nomad Capital “ideas”-style list / detail */
@@ -524,19 +533,19 @@ body {
 }
 
 [data-framer-root] .nomad-beliefs__term {
-    font-family: var(--nomad-sans);
-    font-size: 13px;
+    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+    font-size: clamp(15px, 1.5vw, 17px);
     font-weight: 600;
     color: var(--nomad-ink);
-    margin: 0 0 6px;
-    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+    letter-spacing: 0.01em;
 }
 
 [data-framer-root] .nomad-beliefs__desc {
-    font-family: var(--nomad-sans);
-    font-size: clamp(14px, 1.35vw, 15px);
-    line-height: 1.55;
-    color: var(--nomad-ink-muted);
+    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+    font-size: clamp(15px, 1.5vw, 17px);
+    line-height: 1.6;
+    color: rgba(240, 240, 240, 0.72);
     margin: 0;
 }
 
@@ -545,14 +554,15 @@ body {
 }
 
 [data-framer-root] .nomad-cred {
-    font-family: var(--nomad-mono);
-    font-size: 10px;
+    font-family: var(--nomad-sans);
+    font-size: 11px;
     font-weight: 500;
-    letter-spacing: 0.08em;
-    color: rgba(240, 240, 240, 0.3);
-    margin: 0 0 clamp(28px, 4vw, 40px);
-    padding-bottom: clamp(20px, 3vw, 28px);
+    letter-spacing: 0.04em;
+    color: rgba(240, 240, 240, 0.42);
+    margin: 0 0 clamp(24px, 3.5vw, 36px);
+    padding-bottom: clamp(18px, 2.5vw, 26px);
     border-bottom: 1px solid var(--nomad-border);
+    line-height: 1.5;
 }
 
 @media (max-width: 600px) {
