@@ -1582,7 +1582,7 @@
         outer.style.cssText =
             "margin-top:18px;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden;font-family:inherit;font-size:11px;line-height:1.45;color:#e0e0e0;";
         var rows = [
-            ["Investors", "Monthly retainer. You rent the work."],
+            ["Agencies", "Monthly retainer. You rent the work."],
             ["Off-the-shelf", "Adapts you to it. Fees forever."],
             ["Nomad Studio", "Flat fee. You own it. Done."],
         ];
