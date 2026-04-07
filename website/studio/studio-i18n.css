@@ -106,16 +106,16 @@ body {
     padding-top: clamp(72px, 12vw, 120px);
 }
 
-/* POV index: offset column from logo, ideas-style left column */
+/* POV index: centered — padding handled by inner column */
 .nomad-subpage-main--pov-index {
-    padding-left: clamp(20px, 5vw, 56px);
-    padding-right: clamp(20px, 4vw, 40px);
+    padding-left: 0;
+    padding-right: 0;
 }
 
 /* POV / About editorial typography (standalone pages; formerly injected before FAQs) */
 [data-framer-root] .nomad-editorial-block {
     width: 100%;
-    max-width: 1100px;
+    max-width: 780px;
     margin: 0 auto;
     padding: clamp(48px, 6vw, 80px) clamp(20px, 4vw, 40px);
     border-top: 1px solid var(--nomad-border);
@@ -147,8 +147,8 @@ body {
     font-size: clamp(15px, 1.5vw, 17px);
     line-height: 1.55;
     color: var(--nomad-ink-muted);
-    max-width: 780px;
-    margin: 0 auto;
+    max-width: 100%;
+    margin: 0;
 }
 
 /* POV article — Nomad Capital “ideas”-style list / detail */
@@ -211,12 +211,12 @@ body {
     margin-bottom: 0;
 }
 
-/* POV index — Nomad Capital “ideas”: left column, serif tagline, sans list */
+/* POV index — Nomad Capital “ideas”: centered column, serif tagline, sans list */
 [data-framer-root] .nomad-pov-index {
     width: 100%;
-    max-width: 780px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 0 0 clamp(64px, 10vw, 120px);
+    padding: 0 clamp(20px, 4vw, 40px) clamp(64px, 10vw, 120px);
     scroll-margin-top: 72px;
 }
 
@@ -504,4 +504,59 @@ body {
 /* Section 02 — space between headline and comparison card (Framer stack gap / padding) */
 [data-framer-root] [data-nomad-s02-comparison-wrap] {
     padding-top: clamp(48px, 4.5vw, 64px) !important;
+}
+
+/* ── About: beliefs as cards ──────────────────────────────────────────── */
+[data-framer-root] .nomad-beliefs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--nomad-border);
+    border: 1px solid var(--nomad-border);
+    margin: clamp(20px, 3vw, 28px) 0;
+    list-style: none;
+    padding: 0;
+}
+
+[data-framer-root] .nomad-beliefs__item {
+    background: var(--nomad-canvas);
+    padding: clamp(18px, 2.5vw, 26px);
+}
+
+[data-framer-root] .nomad-beliefs__term {
+    font-family: var(--nomad-sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--nomad-ink);
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+}
+
+[data-framer-root] .nomad-beliefs__desc {
+    font-family: var(--nomad-sans);
+    font-size: clamp(14px, 1.35vw, 15px);
+    line-height: 1.55;
+    color: var(--nomad-ink-muted);
+    margin: 0;
+}
+
+[data-framer-root] .nomad-beliefs dd {
+    margin: 0;
+}
+
+[data-framer-root] .nomad-cred {
+    font-family: var(--nomad-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: rgba(240, 240, 240, 0.3);
+    margin: 0 0 clamp(28px, 4vw, 40px);
+    padding-bottom: clamp(20px, 3vw, 28px);
+    border-bottom: 1px solid var(--nomad-border);
+}
+
+@media (max-width: 600px) {
+    [data-framer-root] .nomad-beliefs {
+        grid-template-columns: 1fr;
+    }
 }
