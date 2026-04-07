@@ -115,52 +115,17 @@ body {
 /* POV / About editorial typography (standalone pages; formerly injected before FAQs) */
 [data-framer-root] .nomad-editorial-block {
     width: 100%;
-    max-width: 780px;
+    max-width: 40rem;
     margin: 0 auto;
     padding: clamp(48px, 6vw, 80px) clamp(20px, 4vw, 40px);
     border-top: 1px solid var(--nomad-border);
     scroll-margin-top: 72px;
 }
 
-/* About kicker — match POV index eyebrow (.nomad-pov-index__eyebrow) */
-[data-framer-root] .nomad-editorial-block__kicker {
-    font-family: var(--nomad-sans);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: lowercase;
-    color: rgba(240, 240, 240, 0.48);
-    margin: 0 0 clamp(16px, 2.5vw, 22px);
-}
-
-/* About title — match POV index tagline (.nomad-pov-index__tagline) */
-[data-framer-root] .nomad-editorial-block__title {
-    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
-    font-size: clamp(1.85rem, 4.5vw, 2.85rem);
-    font-weight: 400;
-    letter-spacing: 0.02em;
-    line-height: 1.12;
-    color: var(--nomad-ink);
-    margin: 0 0 clamp(14px, 2vw, 20px);
-}
-
-/* About body — match POV list summaries (.nomad-article-list__summary) */
+/* About page: reuse POV article typography (.nomad-article__*) — see about/index.html */
 [data-framer-root] .nomad-editorial-block__body {
-    font-family: var(--nomad-sans);
-    font-size: clamp(15px, 1.4vw, 17px);
-    font-weight: 400;
-    line-height: 1.55;
-    color: rgba(240, 240, 240, 0.58);
     max-width: 100%;
     margin: 0;
-}
-
-[data-framer-root] .nomad-editorial-block__body p {
-    margin: 0 0 1.35em;
-}
-
-[data-framer-root] .nomad-editorial-block__body p:last-child {
-    margin-bottom: 0;
 }
 
 /* POV article — Nomad Capital “ideas”-style list / detail */
@@ -535,23 +500,24 @@ body {
     padding: clamp(18px, 2.5vw, 26px);
 }
 
-/* Belief headings — match POV article list titles (.nomad-article-list__title) */
+/* Belief headings — Inter bold like article title, scaled for 2-col cards */
 [data-framer-root] .nomad-beliefs__term {
     font-family: var(--nomad-sans);
-    font-size: clamp(1.2rem, 2.5vw, 1.55rem);
+    font-size: clamp(1.1rem, 2.2vw, 1.45rem);
     font-weight: 700;
     letter-spacing: -0.02em;
-    line-height: 1.28;
+    line-height: 1.2;
     color: var(--nomad-ink);
-    margin: 0 0 clamp(12px, 2vw, 16px);
+    margin: 0 0 10px;
 }
 
+/* Belief copy — same as POV article body (.nomad-article__body) */
 [data-framer-root] .nomad-beliefs__desc {
     font-family: var(--nomad-sans);
-    font-size: clamp(15px, 1.4vw, 17px);
+    font-size: clamp(16px, 1.55vw, 18px);
     font-weight: 400;
-    line-height: 1.55;
-    color: rgba(240, 240, 240, 0.58);
+    line-height: 1.65;
+    color: rgba(240, 240, 240, 0.82);
     margin: 0;
 }
 
@@ -559,14 +525,8 @@ body {
     margin: 0;
 }
 
-/* Cred strip — match POV list dates (.nomad-article-list__date) */
-[data-framer-root] .nomad-cred {
-    font-family: var(--nomad-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    color: rgba(240, 240, 240, 0.48);
-    margin: 0 0 clamp(24px, 3.5vw, 36px);
+/* Cred strip: typography from .nomad-article__date; rule + spacing below */
+[data-framer-root] .nomad-cred.nomad-article__date {
     padding-bottom: clamp(18px, 2.5vw, 26px);
     border-bottom: 1px solid var(--nomad-border);
     line-height: 1.5;
