@@ -1577,21 +1577,54 @@
         walkTextNodes(wrap, function (node) {
             var v = node.nodeValue;
             if (!v || !/\S/.test(v)) return;
-            if (/^\s*Investors\s*$/i.test(v)) {
+            var norm = v.replace(/\s+/g, " ").trim();
+            if (/^investors$/i.test(norm)) {
                 node.nodeValue = v.replace(/investors/gi, "Agencies");
             }
         });
     }
 
+    /**
+     * The subscription vs off-the-shelf comparison often lives under #is-ts-2 (WHO WE HELP), not #is-ts-1.
+     * Find the smallest DOM subtree that contains all three Framer row blurbs so we patch the right card.
+     */
+    function getMinimalSubscriptionComparisonHosts() {
+        var main = document.getElementById("main");
+        if (!main) return [];
+        var all = main.getElementsByTagName("*");
+        var out = [];
+        var i;
+        var j;
+        var el;
+        var inner;
+        for (i = 0; i < all.length; i++) {
+            el = all[i];
+            if (!wrapHasFramerProblemComparisonTable(el)) continue;
+            inner = el.getElementsByTagName("*");
+            var hasInner = false;
+            for (j = 0; j < inner.length; j++) {
+                if (wrapHasFramerProblemComparisonTable(inner[j])) {
+                    hasInner = true;
+                    break;
+                }
+            }
+            if (!hasInner) out.push(el);
+        }
+        return out;
+    }
+
     function patchProblemComparisonTable() {
+        var hosts = getMinimalSubscriptionComparisonHosts();
+        var hi;
+        for (hi = 0; hi < hosts.length; hi++) {
+            fixFramerProblemComparisonFirstRowLabel(hosts[hi]);
+        }
+
         var sec = document.getElementById("is-ts-1");
         if (!sec) return;
         var wrap = resolveProblemComparisonWrap(sec);
         if (!wrap || wrap.querySelector("[data-nomad-problem-table]")) return;
-        if (wrapHasFramerProblemComparisonTable(wrap)) {
-            fixFramerProblemComparisonFirstRowLabel(wrap);
-            return;
-        }
+        if (wrapHasFramerProblemComparisonTable(wrap) || hosts.length) return;
         var outer = document.createElement("div");
         outer.setAttribute("data-nomad-problem-table", "1");
         outer.style.cssText =
