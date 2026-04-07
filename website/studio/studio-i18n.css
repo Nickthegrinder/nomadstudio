@@ -280,19 +280,11 @@ body {
     text-decoration: none;
     color: var(--nomad-ink);
     outline-offset: 4px;
+    cursor: pointer;
 }
 
 [data-framer-root] .nomad-article-list__link:visited {
     color: var(--nomad-ink);
-}
-
-[data-framer-root] .nomad-article-list__link:hover .nomad-article-list__title,
-[data-framer-root] .nomad-article-list__link:focus-visible .nomad-article-list__title {
-    color: var(--nomad-lime) !important;
-    text-decoration: underline;
-    text-decoration-color: var(--nomad-lime);
-    text-underline-offset: 5px;
-    text-decoration-thickness: 1px;
 }
 
 [data-framer-root] .nomad-article-list__title {
@@ -307,6 +299,20 @@ body {
     max-width: 100%;
     text-decoration: none;
     transition: color 0.15s ease;
+}
+
+/* Lime title + underline — scoped under .nomad-pov-index; hex + webkit fill for stubborn UAs */
+[data-framer-root] .nomad-pov-index .nomad-article-list__link:hover .nomad-article-list__title,
+[data-framer-root] .nomad-pov-index .nomad-article-list__title:hover,
+[data-framer-root] .nomad-pov-index .nomad-article-list__link:focus-visible .nomad-article-list__title,
+[data-framer-root] .nomad-pov-index .nomad-article-list__link:active .nomad-article-list__title {
+    color: #c8ff00 !important;
+    -webkit-text-fill-color: #c8ff00;
+    text-decoration: underline !important;
+    text-decoration-color: #c8ff00 !important;
+    text-underline-offset: 5px;
+    text-decoration-thickness: 1px;
+    text-decoration-skip-ink: auto;
 }
 
 [data-framer-root] .nomad-article-list__summary {
