@@ -1571,12 +1571,27 @@
         );
     }
 
+    /** Framer ships this block with a misleading first-row label; we inject only when absent. */
+    function fixFramerProblemComparisonFirstRowLabel(wrap) {
+        if (!wrap) return;
+        walkTextNodes(wrap, function (node) {
+            var v = node.nodeValue;
+            if (!v || !/\S/.test(v)) return;
+            if (/^\s*Investors\s*$/i.test(v)) {
+                node.nodeValue = v.replace(/investors/gi, "Agencies");
+            }
+        });
+    }
+
     function patchProblemComparisonTable() {
         var sec = document.getElementById("is-ts-1");
         if (!sec) return;
         var wrap = resolveProblemComparisonWrap(sec);
         if (!wrap || wrap.querySelector("[data-nomad-problem-table]")) return;
-        if (wrapHasFramerProblemComparisonTable(wrap)) return;
+        if (wrapHasFramerProblemComparisonTable(wrap)) {
+            fixFramerProblemComparisonFirstRowLabel(wrap);
+            return;
+        }
         var outer = document.createElement("div");
         outer.setAttribute("data-nomad-problem-table", "1");
         outer.style.cssText =
