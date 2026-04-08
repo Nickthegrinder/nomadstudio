@@ -1002,10 +1002,10 @@
             nav.setAttribute("data-nomad-header-util", "1");
             nav.setAttribute("aria-label", "Editorial");
             var l1 = document.createElement("a");
-            l1.href = "pov/index.html";
+            l1.href = "/pov/";
             l1.textContent = "pov";
             var l2 = document.createElement("a");
-            l2.href = "about/index.html";
+            l2.href = "/about/";
             l2.textContent = "about";
             nav.appendChild(l1);
             nav.appendChild(l2);
