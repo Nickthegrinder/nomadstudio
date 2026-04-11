@@ -1005,8 +1005,8 @@
             l1.href = "/pov/";
             l1.textContent = "pov";
             var l2 = document.createElement("a");
-            l2.href = "/about/";
-            l2.textContent = "about";
+            l2.href = "/principles/";
+            l2.textContent = "principles";
             nav.appendChild(l1);
             nav.appendChild(l2);
             shell.insertBefore(nav, shell.firstChild);
