@@ -27,7 +27,7 @@ jobs:
         run: |
           mkdir -p public
           cp index.html studio-i18n.css studio-i18n.js public/
-          cp -r pov about public/
+          cp -r pov principles public/
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
