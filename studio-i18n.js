@@ -20,7 +20,7 @@
     };
 
     var HERO_LEDE =
-        "we help established businesses in Canada cut the manual work, build the right systems, and actually use AI — without the bloat, the retainers, or the guesswork.";
+        "we help established businesses in Canada cut the manual work, build the right systems, and actually use AI, without the bloat, the retainers, or the guesswork.";
 
     var CTA_SUBCOPY_EXACT =
         "zero bs. flat fee. smooth operations. private businesses and organizations welcome.";
@@ -52,7 +52,7 @@
     var CONTACT_EMAIL = "team@nomadholdings.ca";
     var SITE_URL = "https://nomadholdings.ca/";
     var MAILTO_LETS_TALK =
-        "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Let's talk — Nomad Studio");
+        "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Let's talk, Nomad Studio");
 
     var mailtoNavLockUntil = 0;
 
@@ -173,10 +173,10 @@
         ],
         [
             "legal, financial services, healthcare, construction, ecommerce, real estate. any industry with real problems, real budgets, and operators who've been inside it long enough to know where the money leaks.",
-            "Not at all. We work across construction, manufacturing, real estate, healthcare, and professional services. We don't focus on a specific industry—we focus on established businesses that are bleeding margin because of manual processes, messy spreadsheets, and operational bloat.",
+            "Not at all. We work across construction, manufacturing, real estate, healthcare, and professional services. We don't focus on a specific industry. We focus on established businesses that are bleeding margin because of manual processes, messy spreadsheets, and operational bloat.",
         ],
         [
-            "We charge a flat fee: 20% when we start and 80% when we deliver. No hourly billing or open-ended retainers—you own what we build.",
+            "We charge a flat fee: 20% when we start and 80% when we deliver. No hourly billing or open-ended retainers. You own what we build.",
             "We work on a flat-fee basis. You pay 20% to kick off the build, and the remaining 80% only when the system is delivered and working. No hourly billing, no endless agency retainers, and no hidden surprises.",
         ],
         ["The Best AI Companies Get Built From The Inside.", "Automate the mess. Scale the rest."],
@@ -190,7 +190,7 @@
         ["we don't take every deal. most don't make it through.", "we only take projects where we can actually make an impact."],
         ["a problem worth solving and people who'd pay for it", "you want to focus on your business, not your IT."],
         ["the domain expert knows what needs to exist.", "Forces you to change how you work."],
-        ["ready to commit as a co-builder", "Book a conversation—no obligation."],
+        ["ready to commit as a co-builder", "Book a conversation, no obligation."],
         ["we're not looking for first-time entrepreneurs.", "we aren't looking for tech startups."],
         ["real relationships others don't have", "you want tools that work for you, not against you."],
         ["10+ years inside one vertical", "you want flat-fee results, not hourly billing."],
@@ -288,7 +288,7 @@
             "If we can help, we charge 20% to start and 80% when it's done. Zero risk.",
             "you want to know what you're paying before we start",
         ],
-        ["you want to focus on your business, not your IT.", "you want to focus on your business — not your IT"],
+        ["you want to focus on your business, not your IT.", "you want to focus on your business, not your IT"],
     ];
     FRAMER_VENTURE_SCRUB.sort(function (a, b) {
         return (b[0] || "").length - (a[0] || "").length;
@@ -514,7 +514,7 @@
     var FAQ_ANSWER_ROWS = [
         {
             want:
-                "yes. we work remotely with businesses and organizations across north america. if your operations run on software and spreadsheets, we can help regardless of where you're based. we also run AI literacy workshops and process audits for teams and organizations. these are designed for non-technical staff — no coding background required. workshops are available in English and French. ask us about format and pricing.",
+                "yes. we work remotely with businesses and organizations across north america. if your operations run on software and spreadsheets, we can help regardless of where you're based. we also run AI literacy workshops and process audits for teams and organizations. these are designed for non-technical staff, no coding background required. workshops are available in English and French. ask us about format and pricing.",
         },
         {
             want:
@@ -522,7 +522,7 @@
         },
         {
             want:
-                "we'll tell you. if a spreadsheet or off-the-shelf tool is the honest answer, we'll say so—and we won't charge you to build what you don't need.",
+                "we'll tell you. if a spreadsheet or off-the-shelf tool is the honest answer, we'll say so, and we won't charge you to build what you don't need.",
         },
         {
             want:
@@ -530,11 +530,11 @@
         },
         {
             want:
-                "yes. we work with non-profits, funded programs, and public institutions on fixed-scope, fixed-fee contracts. if you run training programs, community services, or operational mandates and need AI or automation support — we can help. reach out at team@nomadholdings.ca to discuss scope.",
+                "yes. we work with non-profits, funded programs, and public institutions on fixed-scope, fixed-fee contracts. if you run training programs, community services, or operational mandates and need AI or automation support, we can help. reach out at team@nomadholdings.ca to discuss scope.",
         },
         {
             want:
-                "yes — that's usually the starting point. we build around what you already use. we only recommend replacing a tool if it's genuinely the bottleneck.",
+                "yes, that's usually the starting point. we build around what you already use. we only recommend replacing a tool if it's genuinely the bottleneck.",
         },
         {
             want:
@@ -558,7 +558,7 @@
         FAQ_ANSWER_ROWS[2],
         {
             want:
-                "automation workflows, internal tools, dashboards, integrations, and AI features your team will actually use. we scope to your operations, not a feature checklist. yes — we usually build around your existing tools; we only recommend replacing one when it's genuinely the bottleneck.",
+                "automation workflows, internal tools, dashboards, integrations, and AI features your team will actually use. we scope to your operations, not a feature checklist. yes, we usually build around your existing tools; we only recommend replacing one when it's genuinely the bottleneck.",
         },
         FAQ_ANSWER_ROWS[4],
         FAQ_ANSWER_ROWS[6],
@@ -1032,7 +1032,7 @@
         applySection02ProblemHeadline();
         patchSection02ProblemBody();
         patchProblemComparisonPanels();
-        patchProblemComparisonTable();
+        // patchProblemComparisonTable();
         applyWhoWeHelpHeadline();
         removeWhoWeHelpInjectedParas();
         patchCtaSubcopy();
@@ -1653,8 +1653,8 @@
                 "color:#e0e0e0;font-size:12px;font-family:Geist Mono, SF Mono, ui-monospace, monospace;";
             c1.textContent = rows[i][1];
             if (rows[i][0] === "Nomad Studio") {
-                c0.style.color = "#c8ff00";
-                c1.style.color = "#c8ff00";
+                c0.style.color = "#63ed40";
+                c1.style.color = "#63ed40";
             }
             r.appendChild(c0);
             r.appendChild(c1);
@@ -1783,16 +1783,31 @@
      */
     function runSection02Repair() {
         var sec = document.getElementById("is-ts-1");
-        if (!sec) return;
-        walkTextNodes(sec, function (node) {
-            var raw = node.nodeValue;
-            var next = applySanitizeToText(raw);
-            if (next !== raw) node.nodeValue = next;
-        });
-        applySection02ProblemHeadline();
-        patchSection02ProblemBody();
-        patchProblemComparisonPanels();
-        patchProblemComparisonTable();
+        if (sec) {
+            walkTextNodes(sec, function (node) {
+                var raw = node.nodeValue;
+                var next = applySanitizeToText(raw);
+                if (next !== raw) node.nodeValue = next;
+            });
+            applySection02ProblemHeadline();
+            patchSection02ProblemBody();
+            patchProblemComparisonPanels();
+            // patchProblemComparisonTable();
+        }
+
+        var sec3 = document.getElementById("is-ts-2");
+        if (sec3) {
+            walkTextNodes(sec3, function (node) {
+                var raw = node.nodeValue || "";
+                if (raw.indexOf("Nomad Studio") !== -1 || raw.indexOf("Flat fee. You own it. Done.") !== -1) {
+                    var p = node.parentNode;
+                    if (p) {
+                        p.style.setProperty("color", "#63ed40", "important");
+                        p.style.setProperty("--framer-text-color", "rgb(99, 237, 64)", "important");
+                    }
+                }
+            });
+        }
     }
 
     function scheduleSection02PostHydrateRepair() {
