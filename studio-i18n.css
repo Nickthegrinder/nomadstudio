@@ -83,18 +83,21 @@ body {
     pointer-events: none;
 }
 
-/* [nomad] home — standalone POV / About pages (scrolls with page) */
+/* [nomad] home — standalone POV / About pages — matches homepage Framer header */
 [data-framer-root] > a.nomad-subpage-home {
     position: absolute;
     top: 8px;
     left: 8px;
     z-index: 100;
     font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
-    font-size: clamp(1.15rem, 2.2vw, 1.4rem);
+    font-size: clamp(0.95rem, 1.8vw, 1.15rem);
     font-weight: 400;
     letter-spacing: 0.02em;
     color: var(--nomad-ink);
     text-decoration: none;
+    line-height: 1;
+    border: none;
+    padding: 0;
 }
 
 [data-framer-root] > a.nomad-subpage-home:hover {

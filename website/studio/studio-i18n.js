@@ -20,7 +20,7 @@
     };
 
     var HERO_LEDE =
-        "we help established businesses in Canada cut the manual work, build the right systems, and actually use AI — without the bloat, the retainers, or the guesswork.";
+        "we help established businesses in Canada cut the manual work, build the right systems, and actually use AI, without the bloat, the retainers, or the guesswork.";
 
     var CTA_SUBCOPY_EXACT =
         "zero bs. flat fee. smooth operations. private businesses and organizations welcome.";
@@ -52,7 +52,7 @@
     var CONTACT_EMAIL = "team@nomadholdings.ca";
     var SITE_URL = "https://nomadholdings.ca/";
     var MAILTO_LETS_TALK =
-        "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Let's talk — Nomad Studio");
+        "mailto:" + CONTACT_EMAIL + "?subject=" + encodeURIComponent("Let's talk, Nomad Studio");
 
     var mailtoNavLockUntil = 0;
 
@@ -173,10 +173,10 @@
         ],
         [
             "legal, financial services, healthcare, construction, ecommerce, real estate. any industry with real problems, real budgets, and operators who've been inside it long enough to know where the money leaks.",
-            "Not at all. We work across construction, manufacturing, real estate, healthcare, and professional services. We don't focus on a specific industry—we focus on established businesses that are bleeding margin because of manual processes, messy spreadsheets, and operational bloat.",
+            "Not at all. We work across construction, manufacturing, real estate, healthcare, and professional services. We don't focus on a specific industry. We focus on established businesses that are bleeding margin because of manual processes, messy spreadsheets, and operational bloat.",
         ],
         [
-            "We charge a flat fee: 20% when we start and 80% when we deliver. No hourly billing or open-ended retainers—you own what we build.",
+            "We charge a flat fee: 20% when we start and 80% when we deliver. No hourly billing or open-ended retainers. You own what we build.",
             "We work on a flat-fee basis. You pay 20% to kick off the build, and the remaining 80% only when the system is delivered and working. No hourly billing, no endless agency retainers, and no hidden surprises.",
         ],
         ["The Best AI Companies Get Built From The Inside.", "Automate the mess. Scale the rest."],
@@ -190,7 +190,7 @@
         ["we don't take every deal. most don't make it through.", "we only take projects where we can actually make an impact."],
         ["a problem worth solving and people who'd pay for it", "you want to focus on your business, not your IT."],
         ["the domain expert knows what needs to exist.", "Forces you to change how you work."],
-        ["ready to commit as a co-builder", "Book a conversation—no obligation."],
+        ["ready to commit as a co-builder", "Book a conversation, no obligation."],
         ["we're not looking for first-time entrepreneurs.", "we aren't looking for tech startups."],
         ["real relationships others don't have", "you want tools that work for you, not against you."],
         ["10+ years inside one vertical", "you want flat-fee results, not hourly billing."],
@@ -288,7 +288,7 @@
             "If we can help, we charge 20% to start and 80% when it's done. Zero risk.",
             "you want to know what you're paying before we start",
         ],
-        ["you want to focus on your business, not your IT.", "you want to focus on your business — not your IT"],
+        ["you want to focus on your business, not your IT.", "you want to focus on your business, not your IT"],
     ];
     FRAMER_VENTURE_SCRUB.sort(function (a, b) {
         return (b[0] || "").length - (a[0] || "").length;
@@ -514,7 +514,7 @@
     var FAQ_ANSWER_ROWS = [
         {
             want:
-                "yes. we work remotely with businesses and organizations across north america. if your operations run on software and spreadsheets, we can help regardless of where you're based. we also run AI literacy workshops and process audits for teams and organizations. these are designed for non-technical staff — no coding background required. workshops are available in English and French. ask us about format and pricing.",
+                "yes. we work remotely with businesses and organizations across north america. if your operations run on software and spreadsheets, we can help regardless of where you're based. we also run AI literacy workshops and process audits for teams and organizations. these are designed for non-technical staff, no coding background required. workshops are available in English and French. ask us about format and pricing.",
         },
         {
             want:
@@ -522,7 +522,7 @@
         },
         {
             want:
-                "we'll tell you. if a spreadsheet or off-the-shelf tool is the honest answer, we'll say so—and we won't charge you to build what you don't need.",
+                "we'll tell you. if a spreadsheet or off-the-shelf tool is the honest answer, we'll say so, and we won't charge you to build what you don't need.",
         },
         {
             want:
@@ -530,11 +530,11 @@
         },
         {
             want:
-                "yes. we work with non-profits, funded programs, and public institutions on fixed-scope, fixed-fee contracts. if you run training programs, community services, or operational mandates and need AI or automation support — we can help. reach out at team@nomadholdings.ca to discuss scope.",
+                "yes. we work with non-profits, funded programs, and public institutions on fixed-scope, fixed-fee contracts. if you run training programs, community services, or operational mandates and need AI or automation support, we can help. reach out at team@nomadholdings.ca to discuss scope.",
         },
         {
             want:
-                "yes — that's usually the starting point. we build around what you already use. we only recommend replacing a tool if it's genuinely the bottleneck.",
+                "yes, that's usually the starting point. we build around what you already use. we only recommend replacing a tool if it's genuinely the bottleneck.",
         },
         {
             want:
@@ -558,7 +558,7 @@
         FAQ_ANSWER_ROWS[2],
         {
             want:
-                "automation workflows, internal tools, dashboards, integrations, and AI features your team will actually use. we scope to your operations, not a feature checklist. yes — we usually build around your existing tools; we only recommend replacing one when it's genuinely the bottleneck.",
+                "automation workflows, internal tools, dashboards, integrations, and AI features your team will actually use. we scope to your operations, not a feature checklist. yes, we usually build around your existing tools; we only recommend replacing one when it's genuinely the bottleneck.",
         },
         FAQ_ANSWER_ROWS[4],
         FAQ_ANSWER_ROWS[6],
@@ -1005,13 +1005,50 @@
             l1.href = "/pov/";
             l1.textContent = "pov";
             var l2 = document.createElement("a");
-            l2.href = "/about/";
-            l2.textContent = "about";
+            l2.href = "/principles/";
+            l2.textContent = "principles";
             nav.appendChild(l1);
             nav.appendChild(l2);
             shell.insertBefore(nav, shell.firstChild);
         } else if (nav && studioHome && nav.parentElement !== shell) {
             shell.insertBefore(nav, shell.firstChild);
+        }
+    }
+
+    function hideRedundantComparisonBox() {
+        var nodes = document.querySelectorAll("[data-framer-name]");
+        for (var i = 0; i < nodes.length; i++) {
+            var n = nodes[i];
+            if (n.style.display === "none") continue;
+            var text = (n.textContent || "").toLowerCase();
+            if (text.indexOf("monthly retainer") !== -1 && text.indexOf("agencies") !== -1 && text.indexOf("flat fee") !== -1) {
+                // Ensure we don't accidentally hide the entire body or a massive parent layout block
+                if (text.length < 350 && text.indexOf("we don't sell subscriptions") === -1) {
+                    if (n.getAttribute("data-framer-name").length > 0 && n.tagName === "DIV") {
+                        n.setAttribute("style", (n.getAttribute("style") || "") + "; display: none !important; margin: 0 !important; padding: 0 !important; height: 0 !important; overflow: hidden !important;");
+                        return; // Found the specific box, don't loop higher
+                    }
+                }
+            }
+        }
+    }
+
+    function colorizeNomadStudioRows() {
+        var nodes = document.querySelectorAll("[data-framer-name]");
+        for (var i = 0; i < nodes.length; i++) {
+            var n = nodes[i];
+            if (n.style.display === "none") continue;
+            var text = (n.textContent || "").toLowerCase();
+            if (text.indexOf("flat fee. you own it. done.") !== -1) {
+                walkTextNodes(n, function (node) {
+                    var trimmed = (node.nodeValue || "").trim().toLowerCase();
+                    if (trimmed === "nomad studio" || trimmed === "flat fee. you own it. done.") {
+                        if (node.parentElement) {
+                            node.parentElement.style.setProperty("color", "#c8ff00", "important");
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -1024,6 +1061,8 @@
         fixLegacyAttributes();
         fixCanonicalMeta();
         applyMeta();
+        hideRedundantComparisonBox();
+        colorizeNomadStudioRows();
         removeDuplicateHowWeWorkLine();
         patchNavLabels();
         patchNomadLogoHomeLink();
@@ -1620,47 +1659,10 @@
             fixFramerProblemComparisonFirstRowLabel(hosts[hi]);
         }
 
-        var sec = document.getElementById("is-ts-1");
-        if (!sec) return;
-        var wrap = resolveProblemComparisonWrap(sec);
-        if (!wrap || wrap.querySelector("[data-nomad-problem-table]")) return;
-        if (wrapHasFramerProblemComparisonTable(wrap) || hosts.length) return;
-        var outer = document.createElement("div");
-        outer.setAttribute("data-nomad-problem-table", "1");
-        outer.style.cssText =
-            "margin-top:18px;border:1px solid #2a2a2a;border-radius:10px;overflow:hidden;font-family:inherit;font-size:11px;line-height:1.45;color:#e0e0e0;";
-        var rows = [
-            ["Agencies", "Monthly retainer. You rent the work."],
-            ["Off-the-shelf", "Adapts you to it. Fees forever."],
-            ["Nomad Studio", "Flat fee. You own it. Done."],
-        ];
-        var i;
-        var r;
-        var c0;
-        var c1;
-        for (i = 0; i < rows.length; i++) {
-            r = document.createElement("div");
-            r.style.cssText =
-                "display:grid;grid-template-columns:1fr 1.25fr;gap:14px;padding:14px 16px;background:#111111;border-top:" +
-                (i === 0 ? "none" : "1px solid #2a2a2a") +
-                ";align-items:start;";
-            c0 = document.createElement("div");
-            c0.style.cssText =
-                "color:#888;text-transform:uppercase;letter-spacing:0.06em;font-size:9px;font-family:Geist Mono, SF Mono, ui-monospace, monospace;";
-            c0.textContent = rows[i][0];
-            c1 = document.createElement("div");
-            c1.style.cssText =
-                "color:#e0e0e0;font-size:12px;font-family:Geist Mono, SF Mono, ui-monospace, monospace;";
-            c1.textContent = rows[i][1];
-            if (rows[i][0] === "Nomad Studio") {
-                c0.style.color = "#c8ff00";
-                c1.style.color = "#c8ff00";
-            }
-            r.appendChild(c0);
-            r.appendChild(c1);
-            outer.appendChild(r);
-        }
-        wrap.appendChild(outer);
+        // We specifically abort here. The user requested to permanently delete 
+        // the redundant comparison box at the bottom of Section 02.
+        // Returning early prevents JS from manually resurrecting it!
+        return;
     }
 
     function applyWhoWeHelpHeadline() {

@@ -18,7 +18,7 @@ for (const f of ["index.html", "studio-i18n.css", "studio-i18n.js"]) {
   fs.copyFileSync(path.join(SRC, f), path.join(ROOT, f));
 }
 
-for (const sub of ["pov", "about"]) {
+for (const sub of ["pov", "principles"]) {
   const sd = path.join(SRC, sub);
   if (fs.existsSync(sd)) copyDir(sd, path.join(ROOT, sub));
 }
