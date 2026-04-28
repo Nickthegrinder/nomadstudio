@@ -1015,6 +1015,42 @@
         }
     }
 
+    /** SEO: demote all H1s to H2 except the hero headline. */
+    function demoteExtraH1s() {
+        var h1s = document.querySelectorAll("h1");
+        for (var i = 0; i < h1s.length; i++) {
+            var txt = (h1s[i].textContent || "").toLowerCase();
+            if (txt.indexOf("automate the mess") !== -1) continue;
+            var h2 = document.createElement("h2");
+            for (var a = 0; a < h1s[i].attributes.length; a++) {
+                h2.setAttribute(h1s[i].attributes[a].name, h1s[i].attributes[a].value);
+            }
+            h2.innerHTML = h1s[i].innerHTML;
+            h1s[i].parentNode.replaceChild(h2, h1s[i]);
+        }
+    }
+
+    /** SEO: add alt text to images that are missing it. */
+    var IMG_ALT_MAP = {
+        "0CEJ5GPyg0fP5hQGJ2zlBDQozs": "Nomad Studio logo",
+        "LP9abGtcUAhxFa3tY7go8zrVxU": "Nomad Studio team building custom automation systems",
+        "ADKG1UaiqMk7XOqFcYZhy6wAQ": "Nomad Studio flat fee project workflow for Canadian SMEs",
+        "HbEM0vs4m1BekHFqFPozMYz3afI": "Custom automation dashboard built by Nomad Studio for a Canadian business"
+    };
+    function patchImageAltText() {
+        var imgs = document.querySelectorAll("img");
+        for (var i = 0; i < imgs.length; i++) {
+            if (imgs[i].alt && imgs[i].alt.trim()) continue;
+            var src = imgs[i].src || "";
+            for (var key in IMG_ALT_MAP) {
+                if (src.indexOf(key) !== -1) {
+                    imgs[i].alt = IMG_ALT_MAP[key];
+                    break;
+                }
+            }
+        }
+    }
+
     function scrubDocument() {
         walkTextNodes(document.body, function (node) {
             var raw = node.nodeValue;
@@ -1024,6 +1060,8 @@
         fixLegacyAttributes();
         fixCanonicalMeta();
         applyMeta();
+        demoteExtraH1s();
+        patchImageAltText();
         removeDuplicateHowWeWorkLine();
         patchNavLabels();
         patchNomadLogoHomeLink();
